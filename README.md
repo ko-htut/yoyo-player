@@ -1,16 +1,11 @@
-# yoyo_player
+# YoYo Video Player
 
-A new Flutter package project.
+YoYo Video Player is a HLS(.m3u8) video player for flutter.
+The [video_player](https://pub.dev/packages/yoyo_player) is a video player that allows you to select HLS video streaming by selecting the quality. Flick Player wraps `video_player` under the hood and provides base architecture for developers to create their own set of UI and functionalities.
 
-## Getting Started
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+# Features
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
-# yoyo-player
-# yoyo-player
+* You can select multiple quality and open
+* On video tap play/pause, mute/unmute, or perform any action on video.
+* Auto hide controls.
