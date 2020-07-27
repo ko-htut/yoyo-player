@@ -7,9 +7,9 @@ import 'model/m3u8.dart';
 import 'model/m3u8s.dart';
 
 class YoYoPlayer extends StatefulWidget {
-  /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
-  ///
   final String url;
+
+  /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
   YoYoPlayer(this.url, {Key key}) : super(key: key);
 
   @override
@@ -18,6 +18,7 @@ class YoYoPlayer extends StatefulWidget {
 
 class _YoYoPlayerState extends State<YoYoPlayer> {
   VideoPlayerController controller;
+  //m3u8 data video list
   List<M3U8> m3u8List = List();
   String m3u8Content;
 
@@ -47,8 +48,15 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     matches.forEach((RegExpMatch regExpMatch) {
       String quality = (regExpMatch.group(1)).toString();
       String url = (regExpMatch.group(3)).toString();
-      print(url);
-      m3u8List.add(M3U8(quality: quality, url: url));
+      final fullurl = new RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
+      final isfullurl = fullurl.hasMatch(url);
+      String vdurl;
+      if (isfullurl) {
+        vdurl = url;
+      } else {
+        // vdurl = "$url";
+      }
+      m3u8List.add(M3U8(quality: quality, url: vdurl));
     });
     M3U8s m3u8s = M3U8s(m3u8s: m3u8List);
     return m3u8s;
