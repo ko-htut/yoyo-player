@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   video_player: ^0.10.11+2
   http: ^0.12.2
+  path_provider: ^1.6.11
+  wakelock: ^0.1.4+2
 
 dev_dependencies:
   flutter_test:
