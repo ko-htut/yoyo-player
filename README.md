@@ -23,14 +23,14 @@ The [video_player](https://pub.dev/packages/yoyo_player) is a video player that 
  yoyo_player: #latest
  ```
 
-2.Installation dependencies (please ignore if it has been installed automatically)
+2. Installation dependencies (please ignore if it has been installed automatically)
 
 ```dart
  cd Project directory
  flutter packages get
  ```
 
-3.Introduce the library in the page
+3. Introduce the library in the page
 
 ```dart
 import 'package:yoyo_player/yoyo_player.dart';
