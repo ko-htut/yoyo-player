@@ -13,6 +13,8 @@ dependencies:
   http: ^0.12.2
   path_provider: ^1.6.11
   wakelock: ^0.1.4+2
+  orientation: ^1.2.0
+  screen: ^0.0.5
 
 dev_dependencies:
   flutter_test:

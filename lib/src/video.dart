@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:orientation/orientation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'package:wakelock/wakelock.dart';
@@ -12,15 +16,36 @@ import 'model/m3u8s.dart';
 
 class YoYoPlayer extends StatefulWidget {
   final String url;
-
+  final bool deafultfullscreen;
+  final bool multipleaudioquality;
+  final IconData fastForward;
+  final IconData fullscreen;
+  final IconData rewind;
+  final IconData play;
+  final IconData pause;
+  final double aspectRatio;
   /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
-  YoYoPlayer(this.url, {Key key}) : super(key: key);
+  YoYoPlayer({
+    Key key,
+    @required this.url,
+    @required this.deafultfullscreen,
+    @required this.multipleaudioquality,
+    @required this.fullscreen,
+    @required this.rewind,
+    @required this.fastForward,
+    @required this.play,
+    @required this.pause,
+    @required this.aspectRatio,
+  }) : super(key: key);
 
   @override
   _YoYoPlayerState createState() => _YoYoPlayerState();
 }
 
 class _YoYoPlayerState extends State<YoYoPlayer> {
+  AnimationController controlBarAnimationController;
+  Animation<double> controlTopBarAnimation;
+  Animation<double> controlBottomBarAnimation;
   VideoPlayerController controller;
   bool hasInitError = false;
   String videoDuration;
@@ -34,40 +59,62 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   List<AUDIO> audioList = List();
   String m3u8Content;
   bool m3u8show = false;
+  bool fullscreen = false;
+  bool showMeau = false;
   String m3u8quality = "Auto";
-
+  Timer showTime;
+  Size get screenSize => MediaQuery.of(context).size;
   @override
   void initState() {
     super.initState();
-    initPlayer();
-    m3u8video();
-  }
+    videoControllSetup(widget.url);
+    getm3u8(widget.url);
+    var widgetsBinding = WidgetsBinding.instance;
 
-  void initPlayer() {
-    controller.addListener(listener);
-    controller.play();
-  }
-
-  void listener() async {
-    if (controller.value.initialized && controller.value.isPlaying) {
-      if (!await Wakelock.isEnabled) {
-        await Wakelock.enable();
-      }
-      setState(() {
-        videoDuration = convertDurationToString(controller.value.duration);
-        videoSeek = convertDurationToString(controller.value.position);
-        videoSeekSecond = controller.value.position.inSeconds.toDouble();
-        videoDurationSecond = controller.value.duration.inSeconds.toDouble();
+    widgetsBinding.addPostFrameCallback((callback) {
+      widgetsBinding.addPersistentFrameCallback((callback) {
+        if (context == null) return;
+        var orientation = MediaQuery.of(context).orientation;
+        bool _fullscreen;
+        if (orientation == Orientation.landscape) {
+          //Horizontal screen
+          _fullscreen = true;
+          SystemChrome.setEnabledSystemUIOverlays([]);
+        } else if (orientation == Orientation.portrait) {
+          _fullscreen = false;
+          SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+        }
+        if (_fullscreen != fullscreen) {
+          setState(() {
+            fullscreen = !fullscreen;
+            _navigateLocally(context);
+            if (widget.deafultfullscreen != null) {
+              // widget.onfullscreen(fullscreen);
+            }
+          });
+        }
+        //
+        widgetsBinding.scheduleFrame();
       });
-    } else {
-      if (await Wakelock.isEnabled) {
-        await Wakelock.disable();
-        setState(() {});
-      }
-    }
+    });
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    Screen.keepOn(true);
   }
 
-  Future<M3U8s> m3u8video() async {
+  void getm3u8(String video) {
+    if (m3u8List.length > 0) {
+      print("${m3u8List.length} : data start clean");
+      m3u8clean();
+    }
+    print("fet new data form $video data start");
+    m3u8video(video);
+  }
+
+  Future<M3U8s> m3u8video(String video) async {
     m3u8List.add(M3U8(quality: "Auto", url: widget.url));
 
     RegExp regExpaudio = new RegExp(
@@ -119,33 +166,379 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     return m3u8s;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        controller.value.initialized
-            ? GestureDetector(child: VideoPlayer(controller))
-            : AspectRatio(
-                aspectRatio: 16 / 9,
+  void onselectquality(M3U8 data) async {
+    controller.value.isPlaying ? controller.pause() : controller.pause();
+    if (data.quality == " . Auto") {
+      videoControllSetup(data.url);
+    } else {
+      try {
+        String text;
+        final Directory directory = await getApplicationDocumentsDirectory();
+        final File file = File('${directory.path}/${data.quality}.m3u8');
+        print("read file success");
+        text = await file.readAsString();
+        print("data : $text");
+        localm3u8play(file);
+        // videoControllSetup(file);
+      } catch (e) {
+        print("Couldn't read file ${data.quality} e: $e");
+      }
+      print("data : ${data.quality}");
+    }
+  }
+
+  void localm3u8play(File file) {
+    controller = VideoPlayerController.file(
+      file,
+    )..initialize()
+        .then((_) => setState(() => hasInitError = false))
+        .catchError((e) => setState(() => hasInitError = true));
+    controller.addListener(listener);
+    controller.play();
+    controller.seekTo(duration2);
+  }
+
+  void toggleFullScreen() {
+    if (fullscreen) {
+      OrientationPlugin.forceOrientation(DeviceOrientation.portraitUp);
+    } else {
+      OrientationPlugin.forceOrientation(DeviceOrientation.landscapeRight);
+    }
+  }
+
+  void createHideControlbarTimer() {
+    clearHideControlbarTimer();
+    showTime = Timer(Duration(milliseconds: 5000), () {
+      if (controller != null && controller.value.isPlaying) {
+        if (showMeau) {
+          setState(() {
+            showMeau = false;
+            m3u8show = false;
+            controlBarAnimationController.reverse();
+          });
+        }
+      }
+    });
+  }
+
+  void clearHideControlbarTimer() {
+    showTime?.cancel();
+  }
+
+  void toggleControls() {
+    clearHideControlbarTimer();
+
+    if (!showMeau) {
+      showMeau = true;
+      createHideControlbarTimer();
+    } else {
+      m3u8show = false;
+      showMeau = false;
+    }
+    setState(() {
+      if (showMeau) {
+        controlBarAnimationController.forward();
+      } else {
+        controlBarAnimationController.reverse();
+      }
+    });
+  }
+
+  void togglePlay() {
+    createHideControlbarTimer();
+    if (controller.value.isPlaying) {
+      controller.pause();
+    } else {
+      controller.play();
+    }
+    setState(() {});
+  }
+
+  void _navigateLocally(context) async {
+    if (!fullscreen) {
+      if (ModalRoute.of(context).willHandlePopInternally) {
+        Navigator.of(context).pop();
+      }
+      return;
+    }
+    ModalRoute.of(context).addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
+      if (fullscreen) toggleFullScreen();
+    }));
+  }
+
+  double _calculateAspectRatio(BuildContext context) {
+    final width = screenSize.width;
+    final height = screenSize.height;
+    // return widget.playOptions.aspectRatio ?? controller.value.aspectRatio;
+    return width > height ? width / height : height / width;
+  }
+
+  void fastForward() {
+    if (controller.value.duration.inSeconds -
+            controller.value.position.inSeconds >
+        10) {
+      controller
+          .seekTo(Duration(seconds: controller.value.position.inSeconds + 10));
+    }
+    if (!controller.value.isPlaying) setState(() {});
+  }
+
+  void rewind() {
+    if (controller.value.position.inSeconds > 10) {
+      controller
+          .seekTo(Duration(seconds: controller.value.position.inSeconds - 10));
+    } else {
+      controller.seekTo(Duration(seconds: 0));
+    }
+    if (!controller.value.isPlaying) setState(() {});
+  }
+
+  List<Widget> videoBuiltInChildrens() {
+    return [
+      showMeau
+          ? Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Align(
+                alignment: Alignment.bottomCenter,
                 child: Container(
-                  color: Colors.white,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.white38,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
                       children: [
-                        CircularProgressIndicator(
-                          valueColor:
-                              new AlwaysStoppedAnimation<Color>(Colors.amber),
+                        Text('$videoSeek/$videoDuration',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Expanded(
+                          child: VideoProgressIndicator(
+                            controller,
+                            allowScrubbing: true,
+                            colors:
+                                VideoProgressColors(playedColor: Colors.amber),
+                            padding: const EdgeInsets.all(8.0),
+                          ),
                         ),
-                        SizedBox(height: 5),
-                        Text('Loading...')
+                        GestureDetector(
+                            onTap: () {
+                              print("fullscreen test");
+                              try {
+                                toggleFullScreen();
+                              } catch (e) {
+                                print("fullscreen test $e");
+                              }
+                            },
+                            child: Icon(widget.fullscreen, color: Colors.white))
                       ],
                     ),
                   ),
                 ),
               ),
-      ],
+            )
+          : Container(),
+      showMeau
+          ? Align(
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      rewind();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.yellow[100],
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(widget.rewind),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      togglePlay();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.yellow[100],
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(controller.value.isPlaying
+                            ? widget.pause
+                            : widget.play),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      fastForward();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.yellow[100],
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(widget.fastForward),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Container(),
+      showMeau == true
+          ? Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                height: 45,
+                color: Colors.white10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 15.0),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            m3u8show = true;
+                          });
+                        },
+                        child: Padding(
+                            padding: EdgeInsets.all(5),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    // color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    m3u8quality,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ))),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Container(),
+      m3u8show == true
+          ? Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50.0, right: 5),
+                child: Column(
+                  children: m3u8List
+                      .map((e) => InkWell(
+                            onTap: () {
+                              m3u8quality = e.quality;
+                              m3u8show = false;
+                              duration2 = controller.value.position;
+                              onselectquality(e);
+                            },
+                            child: Container(
+                                width: 90,
+                                color: Colors.white,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("${e.quality}"),
+                                )),
+                          ))
+                      .toList(),
+                ),
+              ),
+            )
+          : Container()
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final videoChildrens = <Widget>[
+      GestureDetector(
+        onTap: () {
+          toggleControls();
+        },
+        onDoubleTap: () {
+          togglePlay();
+        },
+        child: ClipRect(
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.black,
+            child: Center(
+                child: AspectRatio(
+              aspectRatio: controller.value.aspectRatio,
+              child: VideoPlayer(controller),
+            )),
+          ),
+        ),
+      ),
+    ];
+    videoChildrens.addAll(videoBuiltInChildrens());
+    return AspectRatio(
+      aspectRatio:
+          fullscreen ? _calculateAspectRatio(context) : widget.aspectRatio,
+      child: controller.value.initialized
+          ? Stack(children: videoChildrens)
+          : Container(
+              color: Colors.white,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(
+                      valueColor:
+                          new AlwaysStoppedAnimation<Color>(Colors.amber),
+                    ),
+                    SizedBox(height: 10),
+                    Text('Loading...')
+                  ],
+                ),
+              ),
+            ),
     );
+  }
+
+  void videoControllSetup(String url) {
+    videoInit(url);
+    controller.addListener(listener);
+    controller.play();
+  }
+
+  void listener() async {
+    if (controller.value.initialized && controller.value.isPlaying) {
+      if (!await Wakelock.isEnabled) {
+        await Wakelock.enable();
+      }
+      setState(() {
+        videoDuration = convertDurationToString(controller.value.duration);
+        videoSeek = convertDurationToString(controller.value.position);
+        videoSeekSecond = controller.value.position.inSeconds.toDouble();
+        videoDurationSecond = controller.value.duration.inSeconds.toDouble();
+      });
+    } else {
+      if (await Wakelock.isEnabled) {
+        await Wakelock.disable();
+        setState(() {});
+      }
+    }
+  }
+
+  void videoInit(String url) {
+    controller = VideoPlayerController.network(url, formatHint: VideoFormat.hls)
+      ..initialize()
+          .then((_) => setState(() => hasInitError = false))
+          .catchError((e) => setState(() => hasInitError = true));
   }
 
   String convertDurationToString(Duration duration) {
@@ -160,9 +553,37 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     return "$minutes:$seconds";
   }
 
+  void m3u8clean() async {
+    print(m3u8List.length);
+    for (int i = 2; i < m3u8List.length; i++) {
+      try {
+        final Directory directory = await getApplicationDocumentsDirectory();
+        final File file = File('${directory.path}/${m3u8List[i].quality}.m3u8');
+        file.delete();
+        print("delete success $file");
+      } catch (e) {
+        print("Couldn't delete file $e");
+      }
+    }
+    try {
+      print("Audio m3u8 list clean");
+      audioList.clear();
+    } catch (e) {
+      print("Audio list clean error $e");
+    }
+    audioList.clear();
+    try {
+      print("m3u8 data list clean");
+      m3u8List.clear();
+    } catch (e) {
+      print("m3u8 video list clean error $e");
+    }
+  }
+
   @override
   void dispose() {
     controller.dispose();
+    m3u8clean();
     super.dispose();
   }
 }
