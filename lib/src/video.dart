@@ -51,7 +51,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   double videoSeekSecond;
   double videoDurationSecond;
   //m3u8 data video list
-  List<M3U8> m3u8List = List();
+  List<M3U8pass> m3u8List = List();
   List<AUDIO> audioList = List();
   String m3u8Content;
   bool m3u8show = false;
@@ -111,7 +111,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   }
 
   Future<M3U8s> m3u8video(String video) async {
-    m3u8List.add(M3U8(quality: "Auto", url: widget.url));
+    m3u8List.add(M3U8pass(dataquality: "Auto", dataurl: widget.url));
 
     RegExp regExpaudio = new RegExp(
       r"""^#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="(.*)",NAME="(.*)",AUTOSELECT=(.*),DEFAULT=(.*),CHANNELS="(.*)",URI="(.*)""",
@@ -155,31 +155,31 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
         } catch (e) {
           print("Couldn't write file");
         }
-        m3u8List.add(M3U8(quality: quality, url: url));
+        m3u8List.add(M3U8pass(dataquality: quality, dataurl: url));
       },
     );
     M3U8s m3u8s = M3U8s(m3u8s: m3u8List);
     return m3u8s;
   }
 
-  void onselectquality(M3U8 data) async {
+  void onselectquality(M3U8pass data) async {
     controller.value.isPlaying ? controller.pause() : controller.pause();
-    if (data.quality == " . Auto") {
-      videoControllSetup(data.url);
+    if (data.dataquality == " . Auto") {
+      videoControllSetup(data.dataurl);
     } else {
       try {
         String text;
         final Directory directory = await getApplicationDocumentsDirectory();
-        final File file = File('${directory.path}/${data.quality}.m3u8');
+        final File file = File('${directory.path}/${data.dataquality}.m3u8');
         print("read file success");
         text = await file.readAsString();
         print("data : $text");
         localm3u8play(file);
         // videoControllSetup(file);
       } catch (e) {
-        print("Couldn't read file ${data.quality} e: $e");
+        print("Couldn't read file ${data.dataquality} e: $e");
       }
-      print("data : ${data.quality}");
+      print("data : ${data.dataquality}");
     }
   }
 
@@ -436,7 +436,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                   children: m3u8List
                       .map((e) => InkWell(
                             onTap: () {
-                              m3u8quality = e.quality;
+                              m3u8quality = e.dataquality;
                               m3u8show = false;
                               duration2 = controller.value.position;
                               onselectquality(e);
@@ -446,7 +446,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                                 color: Colors.white,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text("${e.quality}"),
+                                  child: Text("${e.dataquality}"),
                                 )),
                           ))
                       .toList(),
@@ -555,7 +555,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     for (int i = 2; i < m3u8List.length; i++) {
       try {
         final Directory directory = await getApplicationDocumentsDirectory();
-        final File file = File('${directory.path}/${m3u8List[i].quality}.m3u8');
+        final File file = File('${directory.path}/${m3u8List[i].dataquality}.m3u8');
         file.delete();
         print("delete success $file");
       } catch (e) {

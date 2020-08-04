@@ -1,5 +1,5 @@
-class M3U8 {
-  final String quality;
-  final String url;
-  M3U8({this.quality, this.url});
+class M3U8pass {
+  final String dataquality;
+  final String dataurl;
+  M3U8pass({this.dataurl, this.dataquality});
 }
