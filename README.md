@@ -40,11 +40,12 @@ A simple usage example:
 
 ```dart
 
- YoYoPlayer(
+YoYoPlayer(
           aspectRatio: 16 / 9,
           url:
               "https://player.vimeo.com/external/440218055.m3u8?s=7ec886b4db9c3a52e0e7f5f917ba7287685ef67f&oauth2_token_id=1360367101",
-          deafultfullscreen: false,
+          videoIconStyle: VideoIconStyle(),
+          videoLoadingStyle: VideoLoadingStyle(),
         ),
 ```
 
@@ -60,15 +61,27 @@ Change Icon
   }
 ```
 
+Change Video Loading
+```dart
+ videoLoadingStyle: VideoLoadingStyle(loading : Center(child: Text("Loading video")),
+```
+
 ## Player Icon custom style (VideoStyle)
 
 | Attributes | Type     | Description |
 |------------|----------|-------------|
-| play       | IconData | ----        |
-| pause      | IconData | ----        |
-| fullscreen | IconData | ----        |
-| forward    | IconData | ----        |
-| backward   | IconData | ----        |
+| play       | IconData | You can use any Icon style you want        |
+| pause      | IconData | You can use any Icon style you want        |
+| fullscreen | IconData | You can use any Icon style you want        |
+| forward    | IconData | You can use any Icon style you want        |
+| backward   | IconData | You can use any Icon style you want        |
+
+## Player Loading custom style (VideoStyle)
+
+| Attributes | Type     | Description |
+|------------|----------|-------------|
+| loading       | Widget | You can use any loading style you want       |
+
 
 # MIT License
 
