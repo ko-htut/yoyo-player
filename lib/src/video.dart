@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:orientation/orientation.dart';
@@ -10,32 +9,29 @@ import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'package:wakelock/wakelock.dart';
+import 'package:yoyo_player/src/video_icon_style.dart';
 import 'model/audio.dart';
 import 'model/m3u8.dart';
 import 'model/m3u8s.dart';
 
 class YoYoPlayer extends StatefulWidget {
+  ///Video resource
   final String url;
   final bool deafultfullscreen;
   final bool multipleaudioquality;
-  final IconData fastForward;
-  final IconData fullscreen;
-  final IconData rewind;
-  final IconData play;
-  final IconData pause;
+
+  /// Video Player Icon style
+  final VideoIconStyle videoIconStyle;
   final double aspectRatio;
+
   /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
   YoYoPlayer({
     Key key,
     @required this.url,
     @required this.deafultfullscreen,
     @required this.multipleaudioquality,
-    @required this.fullscreen,
-    @required this.rewind,
-    @required this.fastForward,
-    @required this.play,
-    @required this.pause,
     @required this.aspectRatio,
+    this.videoIconStyle,
   }) : super(key: key);
 
   @override
@@ -329,7 +325,8 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                                 print("fullscreen test $e");
                               }
                             },
-                            child: Icon(widget.fullscreen, color: Colors.white))
+                            child: Icon(widget.videoIconStyle.fullscreen,
+                                color: Colors.white))
                       ],
                     ),
                   ),
@@ -353,7 +350,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                           borderRadius: BorderRadius.circular(50)),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Icon(widget.rewind),
+                        child: Icon(widget.videoIconStyle.backward),
                       ),
                     ),
                   ),
@@ -368,8 +365,8 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Icon(controller.value.isPlaying
-                            ? widget.pause
-                            : widget.play),
+                            ? widget.videoIconStyle.pause
+                            : widget.videoIconStyle.play),
                       ),
                     ),
                   ),
@@ -383,7 +380,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                           borderRadius: BorderRadius.circular(50)),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Icon(widget.fastForward),
+                        child: Icon(widget.videoIconStyle.forward),
                       ),
                     ),
                   ),

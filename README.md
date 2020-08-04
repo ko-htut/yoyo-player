@@ -18,22 +18,22 @@ The [video_player](https://pub.dev/packages/yoyo_player) is a video player that 
 
 1. Add dependency, open the root directory `pubspec.yaml`File in`dependencies:`Add the following code below
 
-   ```yaml
-   yoyo_player: #latest
-   ```
+ ```yaml
+ yoyo_player: #latest
+ ```
 
 2.Installation dependencies (please ignore if it has been installed automatically)
 
-   ```dart
-   cd Project directory
-   flutter packages get
-   ```
+```dart
+ cd Project directory
+ flutter packages get
+ ```
 
 3.Introduce the library in the page
 
-   ```dart
+```dart
 import 'package:yoyo_player/yoyo_player.dart';
-   ```
+```
 ## Usage
 
 A simple usage example:
@@ -41,18 +41,23 @@ A simple usage example:
 ```dart
 
  YoYoPlayer(
-          rewind: Icons.skip_previous,
-          fastForward: Icons.skip_next,
           aspectRatio: 16 / 9,
-          fullscreen: Icons.fullscreen,
-          play: Icons.play_arrow,
-          pause: Icons.pause,
           url:
               "https://player.vimeo.com/external/440218055.m3u8?s=7ec886b4db9c3a52e0e7f5f917ba7287685ef67f&oauth2_token_id=1360367101",
           multipleaudioquality: true,
           deafultfullscreen: false,
         ),
 ```
+
+## Player Icon custom style (VideoStyle)
+
+| Attributes | Type     | Description |
+|------------|----------|------------|
+| play       | IconData | ----       |
+| pause      | IconData | ----       |
+| fullscreen | IconData | ----       |
+| forward    | IconData | ----       |
+| backward   | IconData | ----       |
 
 # MIT License
 
