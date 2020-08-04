@@ -10,6 +10,7 @@ import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'package:wakelock/wakelock.dart';
 import 'package:yoyo_player/src/video_icon_style.dart';
+import 'package:yoyo_player/yoyo_player.dart';
 import 'model/audio.dart';
 import 'model/m3u8.dart';
 import 'model/m3u8s.dart';
@@ -17,19 +18,23 @@ import 'model/m3u8s.dart';
 class YoYoPlayer extends StatefulWidget {
   ///Video resource
   final String url;
-  final bool deafultfullscreen;
+  // final bool deafultfullscreen;
 
   /// Video Player Icon style
   final VideoIconStyle videoIconStyle;
+
+  /// Video Loading Style
+  final VideoLoadingStyle videoLoadingStyle;
   final double aspectRatio;
 
   /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
   YoYoPlayer({
     Key key,
     @required this.url,
-    @required this.deafultfullscreen,
+    // @required this.deafultfullscreen,
     @required this.aspectRatio,
     this.videoIconStyle,
+    this.videoLoadingStyle,
   }) : super(key: key);
 
   @override
@@ -82,9 +87,9 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
           setState(() {
             fullscreen = !fullscreen;
             _navigateLocally(context);
-            if (widget.deafultfullscreen != null) {
-              // widget.onfullscreen(fullscreen);
-            }
+            // if (widget.deafultfullscreen != null) {
+            //   // widget.onfullscreen(fullscreen);
+            // }
           });
         }
         //
@@ -146,7 +151,8 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
         audioList.last;
         String audio;
         if (audioList.length > 1) {
-            audio = """#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-medium",NAME="audio",AUTOSELECT=YES,DEFAULT=YES,CHANNELS="2",URI="${audioList.last.url}"\n""";
+          audio =
+              """#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-medium",NAME="audio",AUTOSELECT=YES,DEFAULT=YES,CHANNELS="2",URI="${audioList.last.url}"\n""";
         }
         try {
           final Directory directory = await getApplicationDocumentsDirectory();
@@ -488,22 +494,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
           fullscreen ? _calculateAspectRatio(context) : widget.aspectRatio,
       child: controller.value.initialized
           ? Stack(children: videoChildrens)
-          : Container(
-              color: Colors.white,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor:
-                          new AlwaysStoppedAnimation<Color>(Colors.amber),
-                    ),
-                    SizedBox(height: 10),
-                    Text('Loading...')
-                  ],
-                ),
-              ),
-            ),
+          : widget.videoLoadingStyle.loading,
     );
   }
 
@@ -556,7 +547,8 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     for (int i = 2; i < m3u8List.length; i++) {
       try {
         final Directory directory = await getApplicationDocumentsDirectory();
-        final File file = File('${directory.path}/${m3u8List[i].dataquality}.m3u8');
+        final File file =
+            File('${directory.path}/${m3u8List[i].dataquality}.m3u8');
         file.delete();
         print("delete success $file");
       } catch (e) {
