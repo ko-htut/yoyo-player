@@ -49,15 +49,27 @@ A simple usage example:
         ),
 ```
 
+Change Icon
+
+```dart
+ videoIconStyle: VideoIconStyle({
+    play : Icons.play_arrow,
+    pause : Icons.play_arrow,
+    fullscreen : Icons.play_arrow,
+    forward : Icons.skip_next,
+    backward : Icons.skip_previous,
+  }
+```
+
 ## Player Icon custom style (VideoStyle)
 
 | Attributes | Type     | Description |
-|------------|----------|------------|
-| play       | IconData | ----       |
-| pause      | IconData | ----       |
-| fullscreen | IconData | ----       |
-| forward    | IconData | ----       |
-| backward   | IconData | ----       |
+|------------|----------|-------------|
+| play       | IconData | ----        |
+| pause      | IconData | ----        |
+| fullscreen | IconData | ----        |
+| forward    | IconData | ----        |
+| backward   | IconData | ----        |
 
 # MIT License
 
