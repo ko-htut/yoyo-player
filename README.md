@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://kohtut.dev"><img src="https://raw.githubusercontent.com/ko-htut/yoyo-player/master/yoyo_logo.png" alt="KoHtut"></a>
+  <a href="https://kohtut.dev/2020/08/05/yo-yo-player/"><img src="https://raw.githubusercontent.com/ko-htut/yoyo-player/master/yoyo_logo.png" alt="KoHtut"></a>
 </h1>
 
 # YoYo Video Player
