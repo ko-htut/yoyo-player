@@ -40,7 +40,6 @@ import 'package:yoyo_player/yoyo_player.dart';
 A simple usage example:
 
 ```dart
-
 YoYoPlayer(
           aspectRatio: 16 / 9,
           url:
@@ -53,13 +52,13 @@ YoYoPlayer(
 Change Icon
 
 ```dart
- videoIconStyle: VideoIconStyle({
+ videoIconStyle: VideoIconStyle(
     play : Icons.play_arrow,
-    pause : Icons.play_arrow,
-    fullscreen : Icons.play_arrow,
+    pause : Icons.pause,
+    fullscreen : Icons.fullscreen,
     forward : Icons.skip_next,
     backward : Icons.skip_previous,
-  }
+ )
 ```
 
 Change Video Loading

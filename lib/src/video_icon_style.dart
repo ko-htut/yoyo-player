@@ -5,7 +5,7 @@ class VideoIconStyle {
   VideoIconStyle({
     this.play = Icons.play_arrow,
     this.pause = Icons.pause,
-    this.fullscreen = Icons.play_arrow,
+    this.fullscreen = Icons.fullscreen,
     this.forward = Icons.skip_next,
     this.backward = Icons.skip_previous,
 

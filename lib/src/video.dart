@@ -25,6 +25,8 @@ class YoYoPlayer extends StatefulWidget {
 
   /// Video Loading Style
   final VideoLoadingStyle videoLoadingStyle;
+
+  /// Video AspectRaitio [aspectRatio : 16 / 9 ]
   final double aspectRatio;
 
   /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
@@ -139,8 +141,18 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     matches.forEach(
       (RegExpMatch regExpMatch) async {
         String quality = (regExpMatch.group(1)).toString();
-        String url = (regExpMatch.group(3)).toString();
-
+        String sourceurl = (regExpMatch.group(3)).toString();
+        final netRegx = new RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
+        final netRegx2 = new RegExp(r'(http|https):\/\/([\w.]+\/?)\S*\w\/');
+        final isNetwork = netRegx.hasMatch(sourceurl);
+        final isNetwork2 = netRegx2.stringMatch(sourceurl);
+        String url;
+        if (isNetwork) {
+          url = sourceurl;
+          print("first match $isNetwork2");
+        } else {
+          url = "$isNetwork2$sourceurl";
+        }
         audiomatches.forEach(
           (RegExpMatch regExpMatch2) async {
             String audiourl = (regExpMatch2.group(6)).toString();
@@ -150,7 +162,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
         print("Audio list last : ${audioList.last.url}");
         audioList.last;
         String audio;
-        if (audioList.length > 1) {
+        if (audioList.length > 0) {
           audio =
               """#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-medium",NAME="audio",AUTOSELECT=YES,DEFAULT=YES,CHANNELS="2",URI="${audioList.last.url}"\n""";
         }
