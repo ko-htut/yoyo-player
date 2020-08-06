@@ -66,21 +66,49 @@ Change Video Loading
  videoLoadingStyle: VideoLoadingStyle(loading : Center(child: Text("Loading video")),
 ```
 
+Play With Subtitle
+```dart
+        body: YoYoPlayer(
+          aspectRatio: 16 / 9,
+          //url ( .m3u8 video streaming link )
+          url:  " ",
+          videoIconStyle: VideoIconStyle(),
+          videoLoadingStyle: VideoLoadingStyle(
+            loading: Center(
+              child: Text("Loading video"),
+            ),
+          ),
+          //subtitle ( ...srt subtitle link )
+          //example ( subtitle:"https://eboxmovie.sgp1.digitaloceanspaces.com/mmmmtest.srt")
+          subtitle: "",
+          // subtitle style
+          subtitleStyle: SubtitleStyle(),
+        ),
+```
+
 ## Player Icon custom style (VideoStyle)
 
-| Attributes | Type     | Description |
-|------------|----------|-------------|
-| play       | IconData | You can use any Icon style you want        |
-| pause      | IconData | You can use any Icon style you want        |
-| fullscreen | IconData | You can use any Icon style you want        |
-| forward    | IconData | You can use any Icon style you want        |
-| backward   | IconData | You can use any Icon style you want        |
+| Attributes | Type     | Description                         |
+|------------|----------|-------------------------------------|
+| play       | IconData | You can use any Icon style you want |
+| pause      | IconData | You can use any Icon style you want |
+| fullscreen | IconData | You can use any Icon style you want |
+| forward    | IconData | You can use any Icon style you want |
+| backward   | IconData | You can use any Icon style you want |
 
 ## Player Loading custom style (VideoStyle)
 
-| Attributes | Type     | Description |
-|------------|----------|-------------|
-| loading       | Widget | You can use any loading style you want       |
+| Attributes | Type   | Description                            |
+|------------|--------|----------------------------------------|
+| loading    | Widget | You can use any loading style you want |
+
+## Subtitle Style
+| Attributes | Type   | Description                            |
+|------------|--------|----------------------------------------|
+| fontweight    | FontWeight | You can use any Subtitle style you want |
+| colors    | Color | You can use any Subtitle style you want |
+| background    | Color | You can use any Subtitle style you want |
+| fontSize    | double | You can use any Subtitle style you want |
 
 
 # MIT License

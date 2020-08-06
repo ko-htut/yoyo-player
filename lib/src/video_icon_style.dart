@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Video Player Icon style
 class VideoIconStyle {
   VideoIconStyle({
-    this.play = Icons.play_arrow,
+    this.play =  Icons.play_arrow,
     this.pause = Icons.pause,
     this.fullscreen = Icons.fullscreen,
     this.forward = Icons.skip_next,

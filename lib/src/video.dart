@@ -14,11 +14,15 @@ import 'package:yoyo_player/yoyo_player.dart';
 import 'model/audio.dart';
 import 'model/m3u8.dart';
 import 'model/m3u8s.dart';
+import 'model/subtitle.dart';
+import 'model/subtitles.dart';
 
 class YoYoPlayer extends StatefulWidget {
   ///Video resource
   final String url;
+
   // final bool deafultfullscreen;
+  final String subtitle;
 
   /// Video Player Icon style
   final VideoIconStyle videoIconStyle;
@@ -29,15 +33,19 @@ class YoYoPlayer extends StatefulWidget {
   /// Video AspectRaitio [aspectRatio : 16 / 9 ]
   final double aspectRatio;
 
+  /// Video Subtitle Style
+  final SubtitleStyle subtitleStyle;
+
   /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
-  YoYoPlayer({
-    Key key,
-    @required this.url,
-    // @required this.deafultfullscreen,
-    @required this.aspectRatio,
-    this.videoIconStyle,
-    this.videoLoadingStyle,
-  }) : super(key: key);
+  YoYoPlayer(
+      {Key key,
+      @required this.url,
+      this.subtitle,
+      @required this.aspectRatio,
+      this.videoIconStyle,
+      this.videoLoadingStyle,
+      this.subtitleStyle})
+      : super(key: key);
 
   @override
   _YoYoPlayerState createState() => _YoYoPlayerState();
@@ -59,17 +67,22 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   List<M3U8pass> m3u8List = List();
   List<AUDIO> audioList = List();
   String m3u8Content;
+  String subtitleContent;
   bool m3u8show = false;
   bool fullscreen = false;
   bool showMeau = false;
+  bool showSubtitles = false;
   String m3u8quality = "Auto";
   Timer showTime;
+  bool sublistener = false;
+  Subtitle subtitle;
   Size get screenSize => MediaQuery.of(context).size;
   @override
   void initState() {
     super.initState();
     videoControllSetup(widget.url);
     getm3u8(widget.url);
+    getsub(widget.subtitle);
     var widgetsBinding = WidgetsBinding.instance;
 
     widgetsBinding.addPostFrameCallback((callback) {
@@ -113,6 +126,16 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     }
     print("fet new data form $video data start");
     m3u8video(video);
+  }
+
+  void getsub(String sub) {
+    if (sub != null) {
+      setState(() {
+        showSubtitles = true;
+        sublistener = true;
+      });
+      _subtitleWatcher(controller, sub: sub);
+    }
   }
 
   Future<M3U8s> m3u8video(String video) async {
@@ -179,6 +202,59 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     );
     M3U8s m3u8s = M3U8s(m3u8s: m3u8List);
     return m3u8s;
+  }
+
+  Future<Subtitles> getSubtitles(String subtitleUrl) async {
+    RegExp regExp = new RegExp(
+      // r"^((\d{2}):(\d{2}):(\d{2})\.(\d+)) +--> +((\d{2}):(\d{2}):(\d{2})\.(\d{3})).*[\r\n]+\s*((?:(?!\r?\n\r?).)*)",
+      r"^((\d{2}):(\d{2}):(\d{2}),(\d{3})) +--> +((\d{2}):(\d{2}):(\d{2}),(\d{2})).*[\r\n]+\s*((?:(?!\r?\n\r?).)*)",
+      caseSensitive: false,
+      multiLine: true,
+    );
+    if (subtitleContent == null && subtitleUrl != null) {
+      http.Response response = await http.get(subtitleUrl);
+      if (response.statusCode == 200) {
+        subtitleContent = utf8.decode(response.bodyBytes);
+      }
+    }
+    print(subtitleContent);
+
+    List<RegExpMatch> matches = regExp.allMatches(subtitleContent).toList();
+    List<Subtitle> subtitleList = List();
+    print("print ${subtitleList.length}");
+    matches.forEach((RegExpMatch regExpMatch) {
+      print("print startTimeHours : ${regExpMatch.group(2)}");
+      int startTimeHours = int.parse(regExpMatch.group(2));
+      int startTimeMinutes = int.parse(regExpMatch.group(3));
+      int startTimeSeconds = int.parse(regExpMatch.group(4));
+      int startTimeMilliseconds = int.parse(regExpMatch.group(5));
+
+      int endTimeHours = int.parse(regExpMatch.group(7));
+      int endTimeMinutes = int.parse(regExpMatch.group(8));
+      int endTimeSeconds = int.parse(regExpMatch.group(9));
+      int endTimeMilliseconds = int.parse(regExpMatch.group(10));
+      String text = (regExpMatch.group(11)).toString();
+
+      print(text);
+
+      Duration startTime = Duration(
+          hours: startTimeHours,
+          minutes: startTimeMinutes,
+          seconds: startTimeSeconds,
+          milliseconds: startTimeMilliseconds);
+      Duration endTime = Duration(
+          hours: endTimeHours,
+          minutes: endTimeMinutes,
+          seconds: endTimeSeconds,
+          milliseconds: endTimeMilliseconds);
+
+      subtitleList.add(
+          Subtitle(startTime: startTime, endTime: endTime, text: text.trim()));
+    });
+
+    Subtitles subtitles = Subtitles(subtitles: subtitleList);
+    print("subtitles");
+    return subtitles;
   }
 
   void onselectquality(M3U8pass data) async {
@@ -310,49 +386,78 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
 
   List<Widget> videoBuiltInChildrens() {
     return [
-      showMeau
-          ? Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Colors.white38,
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Row(
-                      children: [
-                        Text('$videoSeek/$videoDuration',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Expanded(
-                          child: VideoProgressIndicator(
-                            controller,
-                            allowScrubbing: true,
-                            colors:
-                                VideoProgressColors(playedColor: Colors.amber),
-                            padding: const EdgeInsets.all(8.0),
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              showSubtitles
+                  ? Container(
+                      decoration: BoxDecoration(
+                          color: widget.subtitleStyle.background,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Text(
+                          controller.value.initialized
+                              ? subtitle != null ? subtitle.text : ""
+                              : "",
+                          style: TextStyle(
+                            fontWeight: widget.subtitleStyle.fontweight,
+                            color: widget.subtitleStyle.colors,
+                            fontSize: widget.subtitleStyle.fontSize,
                           ),
                         ),
-                        GestureDetector(
-                            onTap: () {
-                              print("fullscreen test");
-                              try {
-                                toggleFullScreen();
-                              } catch (e) {
-                                print("fullscreen test $e");
-                              }
-                            },
-                            child: Icon(widget.videoIconStyle.fullscreen,
-                                color: Colors.white))
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            )
-          : Container(),
+                      ),
+                    )
+                  : Container(),
+              showMeau
+                  ? Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.white38,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Row(
+                            children: [
+                              Text('$videoSeek/$videoDuration',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Expanded(
+                                child: VideoProgressIndicator(
+                                  controller,
+                                  allowScrubbing: true,
+                                  colors: VideoProgressColors(
+                                      playedColor: Colors.amber),
+                                  padding: const EdgeInsets.all(8.0),
+                                ),
+                              ),
+                              GestureDetector(
+                                  onTap: () {
+                                    print("fullscreen test");
+                                    try {
+                                      toggleFullScreen();
+                                    } catch (e) {
+                                      print("fullscreen test $e");
+                                    }
+                                  },
+                                  child: Icon(widget.videoIconStyle.fullscreen,
+                                      color: Colors.white))
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
+        ),
+      ),
       showMeau
           ? Align(
               alignment: Alignment.center,
@@ -533,6 +638,31 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
         setState(() {});
       }
     }
+    if (sublistener != false) {
+      _subtitleWatcher(controller);
+    }
+  }
+
+  _subtitleWatcher(VideoPlayerController videoPlayerController,
+      {String sub}) async {
+    Subtitles subtitles = await getSubtitles(sub);
+    VideoPlayerValue latestValue = videoPlayerController.value;
+
+    Duration videoPlayerPosition = latestValue.position;
+    if (videoPlayerPosition != null) {
+      subtitles.subtitles.forEach((Subtitle subtitleItem) {
+        if (videoPlayerPosition.inMilliseconds >
+                subtitleItem.startTime.inMilliseconds &&
+            videoPlayerPosition.inMilliseconds <
+                subtitleItem.endTime.inMilliseconds) {
+          if (this.mounted) {
+            setState(() {
+              subtitle = subtitleItem;
+            });
+          }
+        }
+      });
+    }
   }
 
   void videoInit(String url) {
@@ -586,6 +716,8 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   void dispose() {
     controller.dispose();
     m3u8clean();
+    showSubtitles = false;
+    sublistener = false;
     super.dispose();
   }
 }
