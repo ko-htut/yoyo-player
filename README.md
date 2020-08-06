@@ -15,6 +15,7 @@ The [video_player](https://pub.dev/packages/yoyo_player) is a video player that 
 * On video tap play/pause, mute/unmute, or perform any action on video.
 * Auto hide controls.
 * (.srt) Video Subtitle Support
+* (.m3u8) HLS Video Streaming Support
 
 ## Install & Set up
 
