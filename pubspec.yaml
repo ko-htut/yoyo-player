@@ -1,6 +1,6 @@
 name: yoyo_player
 description: yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/ko-htut/yoyo-player.git
 
 environment:
