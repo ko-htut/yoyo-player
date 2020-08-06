@@ -14,3 +14,8 @@
 ## [0.0.4] - 2020-08-05
 
 * Bug Fix
+
+## [0.0.5] - 2020-08-06
+
+* Bug Fix
+* (.srt) Video Subtitle Support
