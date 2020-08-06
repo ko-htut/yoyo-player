@@ -7,7 +7,7 @@
 YoYo Video Player is a HLS(.m3u8) video player for flutter.
 The [video_player](https://pub.dev/packages/yoyo_player) is a video player that allows you to select HLS video streaming by selecting the quality. YoYo Player wraps `video_player` under the hood and provides base architecture for developers to create their own set of UI and functionalities.
 
-![Pub Version (including pre-releases)](https://img.shields.io/pub/v/yoyo_player)
+![Pub Version (including pre-releases)](https://img.shields.io/pub/v/yoyo_player)  ![Dart CI](https://github.com/ko-htut/yoyo-player/workflows/Dart%20CI/badge.svg?event=release)
 
 # Features
 
