@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:orientation/orientation.dart';
@@ -9,7 +10,7 @@ import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'package:wakelock/wakelock.dart';
-import 'package:yoyo_player/src/video_icon_style.dart';
+import 'package:yoyo_player/src/video_style.dart';
 import 'package:yoyo_player/yoyo_player.dart';
 import 'model/audio.dart';
 import 'model/m3u8.dart';
@@ -24,8 +25,8 @@ class YoYoPlayer extends StatefulWidget {
   // final bool deafultfullscreen;
   final String subtitle;
 
-  /// Video Player Icon style
-  final VideoIconStyle videoIconStyle;
+  /// Video Player  style
+  final VideoStyle videoStyle;
 
   /// Video Loading Style
   final VideoLoadingStyle videoLoadingStyle;
@@ -42,7 +43,7 @@ class YoYoPlayer extends StatefulWidget {
       @required this.url,
       this.subtitle,
       @required this.aspectRatio,
-      this.videoIconStyle,
+      this.videoStyle,
       this.videoLoadingStyle,
       this.subtitleStyle})
       : super(key: key);
@@ -139,16 +140,15 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   }
 
   Future<M3U8s> m3u8video(String video) async {
-    m3u8List.add(M3U8pass(dataquality: "Auto", dataurl: widget.url));
-
-    RegExp regExpaudio = new RegExp(
-      r"""^#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="(.*)",NAME="(.*)",AUTOSELECT=(.*),DEFAULT=(.*),CHANNELS="(.*)",URI="(.*)""",
-      caseSensitive: false,
-      multiLine: true,
-    );
+    m3u8List.add(M3U8pass(dataquality: "Auto", dataurl: video));
 
     RegExp regExp = new RegExp(
       r"#EXT-X-STREAM-INF:(?:.*,RESOLUTION=(\d+x\d+))?,?(.*)\r?\n(.*)",
+      caseSensitive: false,
+      multiLine: true,
+    );
+    RegExp regExpaudio = new RegExp(
+      r"""^#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="(.*)",NAME="(.*)",AUTOSELECT=(.*),DEFAULT=(.*),CHANNELS="(.*)",URI="(.*)""",
       caseSensitive: false,
       multiLine: true,
     );
@@ -166,28 +166,32 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
         String quality = (regExpMatch.group(1)).toString();
         String sourceurl = (regExpMatch.group(3)).toString();
         final netRegx = new RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
-        final netRegx2 = new RegExp(r'(http|https):\/\/([\w.]+\/?)\S*\w\/');
+        final netRegx2 = new RegExp(r'(.*)\r?\/');
         final isNetwork = netRegx.hasMatch(sourceurl);
-        final isNetwork2 = netRegx2.stringMatch(sourceurl);
-        String url;
+        final match = netRegx2.firstMatch(video);
+        String url = sourceurl;
         if (isNetwork) {
           url = sourceurl;
-          print("first match $isNetwork2");
         } else {
-          url = "$isNetwork2$sourceurl";
+          print(match);
+          final dataurl = match.group(0);
+          url = "$dataurl$sourceurl";
+          print("url network 2 $url $dataurl");
         }
         audiomatches.forEach(
           (RegExpMatch regExpMatch2) async {
             String audiourl = (regExpMatch2.group(6)).toString();
             audioList.add(AUDIO(url: audiourl));
+            print(audiourl);
           },
         );
-        print("Audio list last : ${audioList.last.url}");
-        audioList.last;
-        String audio;
-        if (audioList.length > 0) {
+        String audio = "";
+        print(audioList.length);
+        if (audioList.length != 0) {
           audio =
               """#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-medium",NAME="audio",AUTOSELECT=YES,DEFAULT=YES,CHANNELS="2",URI="${audioList.last.url}"\n""";
+        } else {
+          audio = "";
         }
         try {
           final Directory directory = await getApplicationDocumentsDirectory();
@@ -433,7 +437,8 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                                   controller,
                                   allowScrubbing: true,
                                   colors: VideoProgressColors(
-                                      playedColor: Colors.amber),
+                                      playedColor:
+                                          widget.videoStyle.playedColor),
                                   padding: const EdgeInsets.all(8.0),
                                 ),
                               ),
@@ -446,8 +451,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                                       print("fullscreen test $e");
                                     }
                                   },
-                                  child: Icon(widget.videoIconStyle.fullscreen,
-                                      color: Colors.white))
+                                  child: widget.videoStyle.fullscreen)
                             ],
                           ),
                         ),
@@ -474,7 +478,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                           borderRadius: BorderRadius.circular(50)),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Icon(widget.videoIconStyle.backward),
+                        child: widget.videoStyle.backward,
                       ),
                     ),
                   ),
@@ -487,11 +491,10 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                           color: Colors.yellow[100],
                           borderRadius: BorderRadius.circular(50)),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(controller.value.isPlaying
-                            ? widget.videoIconStyle.pause
-                            : widget.videoIconStyle.play),
-                      ),
+                          padding: const EdgeInsets.all(8.0),
+                          child: controller.value.isPlaying
+                              ? widget.videoStyle.pause
+                              : widget.videoStyle.play),
                     ),
                   ),
                   InkWell(
@@ -504,7 +507,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                           borderRadius: BorderRadius.circular(50)),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Icon(widget.videoIconStyle.forward),
+                        child: widget.videoStyle.forward,
                       ),
                     ),
                   ),
@@ -537,12 +540,8 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    m3u8quality,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                                  child: Text(m3u8quality,
+                                      style: widget.videoStyle.qualitystyle),
                                 ))),
                       ),
                     ),
@@ -570,7 +569,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                                 color: Colors.white,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text("${e.dataquality}"),
+                                  child: Text("${e.dataquality}",style: widget.videoStyle.qashowstyle,),
                                 )),
                           ))
                       .toList(),

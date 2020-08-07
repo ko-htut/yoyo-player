@@ -11,14 +11,17 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: YoYoPlayer(
           aspectRatio: 16 / 9,
-          url: "",
-          videoIconStyle: VideoIconStyle(),
+          url:
+              // "",
+              "https://sfux-ext.sfux.info/hls/chapter/105/1588724110/1588724110.m3u8",
+          videoStyle: VideoStyle(),
           videoLoadingStyle: VideoLoadingStyle(
             loading: Center(
               child: Text("Loading video"),
             ),
           ),
-          subtitle: "",
+          // subtitle:
+          //     "https://eboxmovie.sgp1.digitaloceanspaces.com/mmmmtest.srt",
           subtitleStyle: SubtitleStyle(),
         ),
       ),

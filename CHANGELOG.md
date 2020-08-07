@@ -19,3 +19,8 @@
 
 * Bug Fix
 * (.srt) Video Subtitle Support
+
+## [0.0.6] - 2020-08-07
+
+* Bug Fix
+* Custom Vieo Play Widget Support
