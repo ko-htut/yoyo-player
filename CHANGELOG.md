@@ -24,3 +24,7 @@
 
 * Bug Fix
 * Custom Vieo Play Widget Support
+
+## [0.0.7] - 2020-08-07
+
+* analysis fix
