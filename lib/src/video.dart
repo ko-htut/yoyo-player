@@ -546,7 +546,10 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                                 color: Colors.white,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text("${e.dataquality}",style: widget.videoStyle.qashowstyle,),
+                                  child: Text(
+                                    "${e.dataquality}",
+                                    style: widget.videoStyle.qashowstyle,
+                                  ),
                                 )),
                           ))
                       .toList(),
