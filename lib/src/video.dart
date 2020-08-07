@@ -472,44 +472,21 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                     onTap: () {
                       rewind();
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.yellow[100],
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: widget.videoStyle.backward,
-                      ),
-                    ),
+                    child: widget.videoStyle.backward,
                   ),
                   InkWell(
                     onTap: () {
                       togglePlay();
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.yellow[100],
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: controller.value.isPlaying
-                              ? widget.videoStyle.pause
-                              : widget.videoStyle.play),
-                    ),
+                    child: controller.value.isPlaying
+                        ? widget.videoStyle.pause
+                        : widget.videoStyle.play,
                   ),
                   InkWell(
                     onTap: () {
                       fastForward();
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.yellow[100],
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: widget.videoStyle.forward,
-                      ),
-                    ),
+                    child: widget.videoStyle.forward,
                   ),
                 ],
               ),
