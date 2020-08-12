@@ -18,6 +18,8 @@ import 'model/m3u8s.dart';
 import 'model/subtitle.dart';
 import 'model/subtitles.dart';
 
+typedef VideoCallback<T> = void Function(T t);
+
 class YoYoPlayer extends StatefulWidget {
   ///Video resource
   final String url;
@@ -37,6 +39,9 @@ class YoYoPlayer extends StatefulWidget {
   /// Video Subtitle Style
   final SubtitleStyle subtitleStyle;
 
+  /// video state fullscreen
+  final VideoCallback<bool> onfullscreen;
+
   /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
   YoYoPlayer(
       {Key key,
@@ -45,6 +50,7 @@ class YoYoPlayer extends StatefulWidget {
       @required this.aspectRatio,
       this.videoStyle,
       this.videoLoadingStyle,
+      this.onfullscreen,
       this.subtitleStyle})
       : super(key: key);
 
@@ -73,6 +79,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   bool fullscreen = false;
   bool showMeau = false;
   bool showSubtitles = false;
+  bool offline;
   String m3u8quality = "Auto";
   Timer showTime;
   bool sublistener = false;
@@ -81,8 +88,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   @override
   void initState() {
     super.initState();
-    videoControllSetup(widget.url);
-    getm3u8(widget.url);
+    urlcheck(widget.url);
     getsub(widget.subtitle);
     var widgetsBinding = WidgetsBinding.instance;
 
@@ -103,9 +109,9 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
           setState(() {
             fullscreen = !fullscreen;
             _navigateLocally(context);
-            // if (widget.deafultfullscreen != null) {
-            //   // widget.onfullscreen(fullscreen);
-            // }
+            if (widget.onfullscreen != null) {
+              widget.onfullscreen(fullscreen);
+            }
           });
         }
         //
@@ -118,6 +124,26 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
       DeviceOrientation.landscapeRight,
     ]);
     Screen.keepOn(true);
+  }
+
+  void urlcheck(String url) {
+    final netRegx = new RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
+    final isNetwork = netRegx.hasMatch(url);
+    if (isNetwork) {
+      setState(() {
+        offline = false;
+      });
+      videoControllSetup(url);
+      getm3u8(url);
+      print("online");
+      print("online $offline");
+    } else {
+      setState(() {
+        offline = true;
+        print("offline $offline");
+      });
+      videoControllSetup(url);
+    }
   }
 
   void getm3u8(String video) {
@@ -528,34 +554,63 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
             )
           : Container(),
       m3u8show == true
-          ? Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 50.0, right: 5),
-                child: Column(
-                  children: m3u8List
-                      .map((e) => InkWell(
-                            onTap: () {
-                              m3u8quality = e.dataquality;
-                              m3u8show = false;
-                              duration2 = controller.value.position;
-                              onselectquality(e);
-                            },
-                            child: Container(
-                                width: 90,
-                                color: Colors.white,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "${e.dataquality}",
-                                    style: widget.videoStyle.qashowstyle,
-                                  ),
-                                )),
-                          ))
-                      .toList(),
-                ),
-              ),
-            )
+          ? (offline == false)
+              ? Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50.0, right: 5),
+                    child: Column(
+                      children: m3u8List
+                          .map((e) => InkWell(
+                                onTap: () {
+                                  m3u8quality = e.dataquality;
+                                  m3u8show = false;
+                                  duration2 = controller.value.position;
+                                  onselectquality(e);
+                                },
+                                child: Container(
+                                    width: 90,
+                                    color: Colors.white,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "${e.dataquality}",
+                                        style: widget.videoStyle.qashowstyle,
+                                      ),
+                                    )),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                )
+              : Align(
+                  alignment: Alignment.topRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 15.0),
+                          child: Icon(Icons.arrow_back),
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Offline",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
           : Container()
     ];
   }
@@ -645,10 +700,20 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
   }
 
   void videoInit(String url) {
-    controller = VideoPlayerController.network(url, formatHint: VideoFormat.hls)
-      ..initialize()
-          .then((_) => setState(() => hasInitError = false))
-          .catchError((e) => setState(() => hasInitError = true));
+    if (offline == false) {
+      print("play init url $url offline $offline");
+      controller =
+          VideoPlayerController.network(url, formatHint: VideoFormat.hls)
+            ..initialize()
+                .then((_) => setState(() => hasInitError = false))
+                .catchError((e) => setState(() => hasInitError = true));
+    } else {
+      print("play init url $url offline $offline");
+      controller = VideoPlayerController.file(File(url))
+        ..initialize()
+            .then((value) => setState(() => hasInitError = false))
+            .catchError((e) => setState(() => hasInitError = true));
+    }
   }
 
   String convertDurationToString(Duration duration) {
