@@ -24,7 +24,7 @@ class YoYoPlayer extends StatefulWidget {
   ///Video source
   final String url;
 
-/// Subtitle .srt source
+  /// Subtitle .srt source
   final String subtitle;
 
   /// Video Player  style
@@ -289,7 +289,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
 
   void onselectquality(M3U8pass data) async {
     controller.value.isPlaying ? controller.pause() : controller.pause();
-    if (data.dataquality == " . Auto") {
+    if (data.dataquality == "Auto") {
       videoControllSetup(data.dataurl);
     } else {
       try {
@@ -559,27 +559,29 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
                   alignment: Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 50.0, right: 5),
-                    child: Column(
-                      children: m3u8List
-                          .map((e) => InkWell(
-                                onTap: () {
-                                  m3u8quality = e.dataquality;
-                                  m3u8show = false;
-                                  duration2 = controller.value.position;
-                                  onselectquality(e);
-                                },
-                                child: Container(
-                                    width: 90,
-                                    color: Colors.white,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "${e.dataquality}",
-                                        style: widget.videoStyle.qashowstyle,
-                                      ),
-                                    )),
-                              ))
-                          .toList(),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: m3u8List
+                            .map((e) => InkWell(
+                                  onTap: () {
+                                    m3u8quality = e.dataquality;
+                                    m3u8show = false;
+                                    duration2 = controller.value.position;
+                                    onselectquality(e);
+                                  },
+                                  child: Container(
+                                      width: 90,
+                                      color: Colors.white,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          "${e.dataquality}",
+                                          style: widget.videoStyle.qashowstyle,
+                                        ),
+                                      )),
+                                ))
+                            .toList(),
+                      ),
                     ),
                   ),
                 )
