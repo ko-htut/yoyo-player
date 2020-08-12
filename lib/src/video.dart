@@ -21,10 +21,10 @@ import 'model/subtitles.dart';
 typedef VideoCallback<T> = void Function(T t);
 
 class YoYoPlayer extends StatefulWidget {
-  ///Video resource
+  ///Video source
   final String url;
 
-  // final bool deafultfullscreen;
+/// Subtitle .srt source
   final String subtitle;
 
   /// Video Player  style

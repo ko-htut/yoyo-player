@@ -28,3 +28,7 @@
 ## [0.0.7] - 2020-08-07
 
 * analysis fix
+
+## [0.0.8] - 2020-08-12
+
+* FullScreen Support

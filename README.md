@@ -75,7 +75,7 @@ Play With Subtitle
           //example ( url :"https://sfux-ext.sfux.info/hls/chapter/105/1588724110/1588724110.m3u8" )
           //example ( url :"https://player.vimeo.com/external/440218055.m3u8?s=7ec886b4db9c3a52e0e7f5f917ba7287685ef67f&oauth2_token_id=1360367101" )
           url:  " ",
-          videoIconStyle: VideoIconStyle(),
+          videoStyle: VideoStyle(),
           videoLoadingStyle: VideoLoadingStyle(
             loading: Center(
               child: Text("Loading video"),
@@ -89,6 +89,21 @@ Play With Subtitle
         ),
 ```
 
+# Player Option
+
+## Player
+
+| Attributes        | Type                | Description                                |
+|-------------------|---------------------|--------------------------------------------|
+| url               | String              | Video source  ( .m3u8 & File only)         |
+| subtitle   Î      | String              | Subtitle (.srt)o source                    |
+| videoStyle        | VideoStyle          | Video Player  style                        |
+| videoLoadingStyle | VideoLoadingStyle   | Video Loading Style                        |
+| aspectRatio       | double              | Video AspectRaitio [aspectRatio : 16 / 9 ] |
+| subtitleStyle     | SubtitleStyle       | Video Subtitle Style                       |
+| onfullscreen      | VideoCallback<bool> | video state fullscreen                     |
+
+
 ## Player custom style (VideoStyle)
 
 | Attributes   | Type      | Description                         |
@@ -100,7 +115,7 @@ Play With Subtitle
 | backward     | Widget    | You can use any Widget you want     |
 | playedColor  | Color     | You can use any Icon style you want |
 | qualitystyle | TextStyle | You can use any Text style you want |
-| qashowstyle | TextStyle | You can use any Text style you want |
+| qashowstyle  | TextStyle | You can use any Text style you want |
 
 ## Player Loading custom style (VideoStyle)
 
