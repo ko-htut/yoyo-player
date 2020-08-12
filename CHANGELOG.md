@@ -32,3 +32,4 @@
 ## [0.0.8] - 2020-08-12
 
 * FullScreen Support
+* Fix quality issues
