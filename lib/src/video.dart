@@ -42,6 +42,9 @@ class YoYoPlayer extends StatefulWidget {
   /// video state fullscreen
   final VideoCallback<bool> onfullscreen;
 
+  /// video Type
+  final VideoCallback<String> onpeningvideo;
+
   /// yoyo_player is a video player that allows you to select HLS video streaming by selecting the quality
   YoYoPlayer(
       {Key key,
@@ -51,6 +54,7 @@ class YoYoPlayer extends StatefulWidget {
       this.videoStyle,
       this.videoLoadingStyle,
       this.onfullscreen,
+      this.onpeningvideo,
       this.subtitleStyle})
       : super(key: key);
 
@@ -133,8 +137,27 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
       setState(() {
         offline = false;
       });
-      videoControllSetup(url);
-      getm3u8(url);
+      if (url.endsWith(".mkv")) {
+        if (widget.onpeningvideo != null) {
+          widget.onpeningvideo("MKV");
+        }
+        videoControllSetup(url);
+      } else if (url.endsWith(".mp4")) {
+        if (widget.onpeningvideo != null) {
+          widget.onpeningvideo("MP4");
+        }
+        videoControllSetup(url);
+      } else if (url.endsWith(".m3u8")) {
+        if (widget.onpeningvideo != null) {
+          widget.onpeningvideo("M3U8");
+        }
+        
+        videoControllSetup(url);
+        getm3u8(url);
+      } else {
+        videoControllSetup(url);
+        getm3u8(url);
+      }
       print("online");
       print("online $offline");
     } else {
