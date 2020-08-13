@@ -169,7 +169,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     m3u8List.add(M3U8pass(dataquality: "Auto", dataurl: video));
 
     RegExp regExp = new RegExp(
-      r"#EXT-X-STREAM-INF:(?:.*,RESOLUTION=(\d+x\d+))?,?(.*)\r?\n(.*)",
+      r"#EXT-X-STREAM-INF:(?:.*,RESOLUTION=(\d+x\d+))?:.*,\r?\n(.*)",
       caseSensitive: false,
       multiLine: true,
     );
@@ -207,7 +207,19 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
         audiomatches.forEach(
           (RegExpMatch regExpMatch2) async {
             String audiourl = (regExpMatch2.group(6)).toString();
-            audioList.add(AUDIO(url: audiourl));
+            // audioList.add(AUDIO(url: audiourl));
+            final isNetwork = netRegx.hasMatch(audiourl);
+            final match = netRegx2.firstMatch(video);
+            String auurl = audiourl;
+            if (isNetwork) {
+              auurl = audiourl;
+            } else {
+              print(match);
+              final audataurl = match.group(0);
+              auurl = "$audataurl$audiourl";
+              print("url network audio  $url $audiourl");
+            }
+            audioList.add(AUDIO(url: auurl));
             print(audiourl);
           },
         );

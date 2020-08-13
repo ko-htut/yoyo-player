@@ -14,7 +14,8 @@ class MyApp extends StatelessWidget {
             aspectRatio: 16 / 9,
             url:
                 // "",
-                "https://sfux-ext.sfux.info/hls/chapter/105/1588724110/1588724110.m3u8",
+                // "https://sfux-ext.sfux.info/hls/chapter/105/1588724110/1588724110.m3u8",
+                "https://llvod.mxplay.com/video/6998aa0812ce347231c23033a98f31dc/11/hls/h264_baseline.m3u8",
             videoStyle: VideoStyle(),
             videoLoadingStyle: VideoLoadingStyle(
               loading: Center(
