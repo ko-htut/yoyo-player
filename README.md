@@ -131,6 +131,9 @@ Play With Subtitle
 | background | Color      | You can use any Subtitle style you want |
 | fontSize   | double     | You can use any Subtitle style you want |
 
+## Buy Me a Coffee
+
+<a href="https://www.buymeacoffee.com/kohtut" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/arial-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 
 # MIT License
 
