@@ -62,7 +62,8 @@ class YoYoPlayer extends StatefulWidget {
   _YoYoPlayerState createState() => _YoYoPlayerState();
 }
 
-class _YoYoPlayerState extends State<YoYoPlayer> {
+class _YoYoPlayerState extends State<YoYoPlayer>
+    with SingleTickerProviderStateMixin {
   AnimationController controlBarAnimationController;
   Animation<double> controlTopBarAnimation;
   Animation<double> controlBottomBarAnimation;
@@ -94,6 +95,14 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
     super.initState();
     urlcheck(widget.url);
     getsub(widget.subtitle);
+
+    /// Control bar animation
+    controlBarAnimationController = AnimationController(
+        duration: const Duration(milliseconds: 300), vsync: this);
+    controlTopBarAnimation = Tween(begin: -(36.0 + 0.0 * 2), end: 0.0)
+        .animate(controlBarAnimationController);
+    controlBottomBarAnimation = Tween(begin: -(36.0 + 0.0 * 2), end: 0.0)
+        .animate(controlBarAnimationController);
     var widgetsBinding = WidgetsBinding.instance;
 
     widgetsBinding.addPostFrameCallback((callback) {
@@ -151,7 +160,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> {
         if (widget.onpeningvideo != null) {
           widget.onpeningvideo("M3U8");
         }
-        
+
         videoControllSetup(url);
         getm3u8(url);
       } else {
