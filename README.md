@@ -135,6 +135,33 @@ Play With Subtitle
 
 <a href="https://www.buymeacoffee.com/kohtut" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/arial-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 
+## How is it created ?
+  - The data in the source url (m3u8) is regex checked and the child m3u8 files are created and saved according to the respective rules.
+  - It starts creating child m3u8 files as soon as the video starts playing
+  - Each time a video is completed or the main url changes, child m3u8 files are checked and deleted.
+
+## The child m3u8 files are created as follows:
+ - If viedo quality 
+yoyo[vido-quality].m3u8
+
+ - If video quality & audio quality
+yoyo[video-quality][audio-quality].m3u8
+
+ - If video quality & language audio 
+yoyo[video-quality][language-audio].m3u8
+
+ - If video quality & subtitle
+yoyo[video-quality][subtitle].m3u8
+
+ - If video quality & audio quality & subtitle
+yoyo[video-quality][audio-quality][subtitle].m3u8
+
+ - If video quality & language audio subtitle 
+yoyo[video-quality][language-audio][subtitle].m3u8
+
+ - If  video quality & language audio & audio quality & subtitle
+yoyo[video-quality][languqge-audio][audio-quality][subtitle].m3u8
+
 # MIT License
 
 Copyright (c) 2020 Ko Htut (Ko Min Than Htut)
