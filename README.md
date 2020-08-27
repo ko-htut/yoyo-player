@@ -2,6 +2,8 @@
   <a href="https://kohtut.dev/2020/08/05/yo-yo-player/"><img src="https://raw.githubusercontent.com/ko-htut/yoyo-player/master/yoyo_logo.png" alt="KoHtut"></a>
 </h1>
 
+- THIS PROJECT IS STILL UNDER CONSTRUCTION
+
 # YoYo Video Player
 
 YoYo Video Player is a HLS(.m3u8) video player for flutter.
@@ -142,25 +144,25 @@ Play With Subtitle
 
 ## The child m3u8 files are created as follows:
  - If viedo quality 
-yoyo[vido-quality].m3u8
+   yoyo[vido-quality].m3u8
 
  - If video quality & audio quality
-yoyo[video-quality][audio-quality].m3u8
+   yoyo[video-quality][audio-quality].m3u8
 
  - If video quality & language audio 
-yoyo[video-quality][language-audio].m3u8
+   yoyo[video-quality][language-audio].m3u8
 
  - If video quality & subtitle
-yoyo[video-quality][subtitle].m3u8
+   yoyo[video-quality][subtitle].m3u8
 
  - If video quality & audio quality & subtitle
-yoyo[video-quality][audio-quality][subtitle].m3u8
+   yoyo[video-quality][audio-quality][subtitle].m3u8
 
  - If video quality & language audio subtitle 
-yoyo[video-quality][language-audio][subtitle].m3u8
+   yoyo[video-quality][language-audio][subtitle].m3u8
 
  - If  video quality & language audio & audio quality & subtitle
-yoyo[video-quality][languqge-audio][audio-quality][subtitle].m3u8
+   yoyo[video-quality][languqge-audio][audio-quality][subtitle].m3u8
 
 # MIT License
 
