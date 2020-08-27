@@ -10,7 +10,7 @@ import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'package:wakelock/wakelock.dart';
-import 'package:yoyo_player/src/video_style.dart';
+import 'package:yoyo_player/src/source/video_style.dart';
 import 'package:yoyo_player/yoyo_player.dart';
 import 'model/audio.dart';
 import 'model/m3u8.dart';
