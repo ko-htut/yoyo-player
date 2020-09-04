@@ -16,7 +16,7 @@ The [video_player](https://pub.dev/packages/yoyo_player) is a video player that 
 * You can select multiple quality and open
 * On video tap play/pause, mute/unmute, or perform any action on video.
 * Auto hide controls.
-* `ass`, `srt` and `vtt` Video Subtitle Support
+* `srt`Video Subtitle Support
 * (.m3u8) HLS Video Streaming Support
 
 ## Install & Set up
@@ -149,20 +149,14 @@ Play With Subtitle
  - If video quality & audio quality
    yoyo[video-quality][audio-quality].m3u8
 
- - If video quality & language audio 
-   yoyo[video-quality][language-audio].m3u8
+## Support M3U8 
+ - #EXT-X-MEDIA
+ - #EXT-X-STREAM-INF
 
- - If video quality & subtitle
-   yoyo[video-quality][subtitle].m3u8
-
- - If video quality & audio quality & subtitle
-   yoyo[video-quality][audio-quality][subtitle].m3u8
-
- - If video quality & language audio subtitle 
-   yoyo[video-quality][language-audio][subtitle].m3u8
-
- - If  video quality & language audio & audio quality & subtitle
-   yoyo[video-quality][languqge-audio][audio-quality][subtitle].m3u8
+## Player Screenshot
+| ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss1.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/img/ss2.png) |
+|:--------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|
+| ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/img/ss3.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/img/ss4.png) |
 
 # MIT License
 
