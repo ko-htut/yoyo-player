@@ -154,9 +154,9 @@ Play With Subtitle
  - #EXT-X-STREAM-INF
 
 ## Player Screenshot
-| ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss1.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/img/ss2.png) |
+| ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss1.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss2.png) |
 |:--------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|
-| ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/img/ss3.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/img/ss4.png) |
+| ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss3.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss4.png) |
 
 # MIT License
 
