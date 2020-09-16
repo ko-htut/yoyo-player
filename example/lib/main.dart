@@ -14,17 +14,18 @@ class MyApp extends StatelessWidget {
             aspectRatio: 16 / 9,
             url:
                 // "",
-                // "https://sfux-ext.sfux.info/hls/chapter/105/1588724110/1588724110.m3u8",
-                "https://llvod.mxplay.com/video/6998aa0812ce347231c23033a98f31dc/11/hls/h264_baseline.m3u8",
+                // "https://llvod.mxplay.com/video/40b2e2c7e16b5d6621e3bebe8f48063e/1/hls/h264_high.m3u8",
+                "https://sfux-ext.sfux.info/hls/chapter/105/1588724110/1588724110.m3u8",
+                // "https://llvod.mxplay.com/video/6998aa0812ce347231c23033a98f31dc/11/hls/h264_baseline.m3u8",
             videoStyle: VideoStyle(),
-            videoLoadingStyle: VideoLoadingStyle(
-              loading: Center(
-                child: Text("Loading video"),
-              ),
-            ),
+            // videoLoadingStyle: VideoLoadingStyle(
+            //   loading: Center(
+            //     child: Text("Loading video"),
+            //   ),
+            // ),
             // subtitle:
             //     "https://eboxmovie.sgp1.digitaloceanspaces.com/mmmmtest.srt",
-            subtitleStyle: SubtitleStyle(),
+            // subtitleStyle: SubtitleStyle(),
           ),
         ),
       ),

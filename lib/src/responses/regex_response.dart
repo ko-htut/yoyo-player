@@ -2,7 +2,7 @@ class Rexexresponse {
   static String regexMAIN =
       "#EXT-X-STREAM-INF:(?:.*,RESOLUTION=(\d+x\d+))?:.*,\r?\n(.*)";
   static String regexMEDIA =
-      r"""^#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="(.*)",NAME="(.*)",AUTOSELECT=(.*),DEFAULT=(.*),CHANNELS="(.*)",URI="(.*)""";
+      r"""^#EXT-X-MEDIA:TYPE=AUDIO(?:.*,URI="(.*m3u8)")""";
   static String regexAUDIO = "";
   static String regexSUBTITLE = "";
   static String regexSRT =
