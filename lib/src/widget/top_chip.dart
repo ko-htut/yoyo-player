@@ -5,7 +5,7 @@ Widget topchip(Widget data, Function fun) {
     onTap: fun,
     child: Container(
       decoration: BoxDecoration(
-          color: Colors.blueGrey, borderRadius: BorderRadius.circular(5)),
+          color: Colors.grey, borderRadius: BorderRadius.circular(5)),
       child: Padding(
         padding: const EdgeInsets.all(3.0),
         child: data,

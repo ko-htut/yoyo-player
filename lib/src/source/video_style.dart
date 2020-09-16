@@ -8,11 +8,13 @@ class VideoStyle {
     this.fullscreen = const Icon(Icons.fullscreen),
     this.forward = const Icon(Icons.skip_next),
     this.backward = const Icon(Icons.skip_previous),
-    this.playedColor = Colors.amber,
-    this.qualitystyle =
-        const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-    this.qashowstyle =
-        const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+    this.playedColor = Colors.green,
+    this.qualitystyle = const TextStyle(
+      color: Colors.white,
+    ),
+    this.qashowstyle = const TextStyle(
+      color: Colors.white,
+    ),
   });
 
   final Widget play;
