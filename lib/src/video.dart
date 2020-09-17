@@ -10,15 +10,12 @@ import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:http/http.dart' as http;
 import 'package:yoyo_player/src/utils/utils.dart';
-import 'package:yoyo_player/src/widget/subtitle_widget.dart';
 import 'package:yoyo_player/src/widget/widget_bottombar.dart';
 import '../yoyo_player.dart';
 import 'model/audio.dart';
 import 'model/m3u8.dart';
 import 'model/m3u8s.dart';
-import 'model/subtitle.dart';
-import 'model/subtitles.dart';
-import 'source/player_option.dart';
+import 'responses/regex_response.dart';
 import 'widget/top_chip.dart';
 
 typedef VideoCallback<T> = void Function(T t);
@@ -54,14 +51,6 @@ class YoYoPlayer extends StatefulWidget {
   /// Video AspectRaitio [aspectRatio : 16 / 9 ]
   final double aspectRatio;
 
-  /// Player Options
-  /// ```dart
-  /// options : PlayerOptions(
-  ///   url : "https://example.com/index.srt",
-  /// )
-  /// ```
-  final PlayeOptions options;
-
   /// video state fullscreen
   final VideoCallback<bool> onfullscreen;
 
@@ -81,16 +70,15 @@ class YoYoPlayer extends StatefulWidget {
   ///   aspectRatio : 16/9,
   /// )
   /// ```
-  YoYoPlayer(
-      {Key key,
-      @required this.url,
-      @required this.aspectRatio,
-      this.videoStyle,
-      this.videoLoadingStyle,
-      this.onfullscreen,
-      this.onpeningvideo,
-      this.options})
-      : super(key: key);
+  YoYoPlayer({
+    Key key,
+    @required this.url,
+    @required this.aspectRatio,
+    this.videoStyle,
+    this.videoLoadingStyle,
+    this.onfullscreen,
+    this.onpeningvideo,
+  }) : super(key: key);
 
   @override
   _YoYoPlayerState createState() => _YoYoPlayerState();
@@ -116,8 +104,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   String videoSeek;
   // Video dutarion 1
   Duration duration;
-  // // video duration 2
-  // Duration duration2;
   // video seek second by user
   double videoSeekSecond;
   // video vuration second
@@ -144,10 +130,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   String m3u8quality = "Auto";
   // time for duration
   Timer showTime;
-  // subtitle listener
-  bool sublistener = false;
-  // subtitle model
-  Subtitle subtitle;
   //Current ScreenSize
   Size get screenSize => MediaQuery.of(context).size;
   //
@@ -202,8 +184,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     m3u8clean();
+    controller.dispose();
     super.dispose();
   }
 
@@ -254,14 +236,11 @@ class _YoYoPlayerState extends State<YoYoPlayer>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  topchip(Text("Myanmar"), () {
-                    // subtitle function
-                  }),
                   Container(
                     width: 5,
                   ),
                   topchip(
-                    Text(m3u8quality + ":$_playtype",
+                    Text(m3u8quality,
                         style: widget.videoStyle.qualitystyle),
                     () {
                       // quality function
@@ -298,7 +277,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                             onTap: () {
                               m3u8quality = e.dataquality;
                               m3u8show = false;
-                              // duration2 = controller.value.position;
                               onselectquality(e);
                               print(
                                   "--- quality select ---\nquality : ${e.dataquality}\nlink : ${e.dataurl}");
@@ -338,40 +316,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
             videoDuration: "$videoDuration",
             showMeau: showMeau,
             play: () => togglePlay())
-        : subtitleplay(
-            controller: controller,
-            showSubtitles: showSubtitles,
-            subtitle: subtitle);
-  }
-
-  Widget subtitleplay(
-      {VideoPlayerController controller, showSubtitles, Subtitle subtitle}) {
-    return showSubtitles
-        ? Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(50),
-                borderRadius: BorderRadius.circular(5)),
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Text(
-                "hello",
-                style: TextStyle(),
-              ),
-            ),
-          )
-        : Container(
-            child: Text("no subtitle"),
-          );
-  }
-
-  void getsub() {
-    if (widget.options.url != null) {
-      setState(() {
-        showSubtitles = true;
-        sublistener = true;
-      });
-      _subtitleWatcher();
-    }
+        : Container();
   }
 
   void urlcheck(String url) {
@@ -436,8 +381,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   Future<M3U8s> m3u8video(String video) async {
     yoyo.add(M3U8pass(dataquality: "Auto", dataurl: video));
-    RegExp regExpAudio = new RegExp(
-      r"""^#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="(.*)",NAME="(.*)",AUTOSELECT=(.*),DEFAULT=(.*),CHANNELS="(.*)",URI="(.*)""",
+    RegExp regExpAudio = new RegExp(Rexexresponse.regexMEDIA,
       caseSensitive: false,
       multiLine: true,
     );
@@ -486,7 +430,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         audioMatches.forEach(
           (RegExpMatch regExpMatch2) async {
             String audiourl = (regExpMatch2.group(1)).toString();
-            // audioList.add(AUDIO(url: audiourl));
             final isNetwork = netRegx.hasMatch(audiourl);
             final match = netRegx2.firstMatch(video);
             String auurl = audiourl;
@@ -552,9 +495,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         setState(() {});
       }
     }
-    if (sublistener != false) {
-      _subtitleWatcher();
-    }
   }
 
   void createHideControlbarTimer() {
@@ -570,79 +510,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         }
       }
     });
-  }
-
-  _subtitleWatcher() async {
-    Subtitles subtitles = await getSubtitles(widget.options.url);
-    // VideoPlayerValue latestValue =  videoPlayerController.value;
-    // Duration videoPlayerPosition = latestValue.position;
-    if (controller.value.position != null) {
-      subtitles.subtitles.forEach((Subtitle subtitleItem) {
-        if (controller.value.position.inMilliseconds >
-                subtitleItem.startTime.inMilliseconds &&
-            controller.value.position.inMilliseconds <
-                subtitleItem.endTime.inMilliseconds) {
-          if (this.mounted) {
-            setState(() {
-              subtitle = subtitleItem;
-            });
-          }
-        }
-      });
-    }
-
-  }
-
-  Future<Subtitles> getSubtitles(String subtitleUrl) async {
-    RegExp regExp = new RegExp(
-      r"^((\d{2}):(\d{2}):(\d{2}),(\d{3})) +--> +((\d{2}):(\d{2}):(\d{2}),(\d{2})).*[\r\n]+\s*((?:(?!\r?\n\r?).)*)",
-      caseSensitive: false,
-      multiLine: true,
-    );
-    if (subtitleContent == null && subtitleUrl != null) {
-      http.Response response = await http.get(subtitleUrl);
-      if (response.statusCode == 200) {
-        subtitleContent = utf8.decode(response.bodyBytes);
-      }
-    }
-    print(subtitleContent);
-
-    List<RegExpMatch> matches = regExp.allMatches(subtitleContent).toList();
-    List<Subtitle> subtitleList = List();
-    print("print ${subtitleList.length}");
-    matches.forEach((RegExpMatch regExpMatch) {
-      print("print startTimeHours : ${regExpMatch.group(2)}");
-      int startTimeHours = int.parse(regExpMatch.group(2));
-      int startTimeMinutes = int.parse(regExpMatch.group(3));
-      int startTimeSeconds = int.parse(regExpMatch.group(4));
-      int startTimeMilliseconds = int.parse(regExpMatch.group(5));
-
-      int endTimeHours = int.parse(regExpMatch.group(7));
-      int endTimeMinutes = int.parse(regExpMatch.group(8));
-      int endTimeSeconds = int.parse(regExpMatch.group(9));
-      int endTimeMilliseconds = int.parse(regExpMatch.group(10));
-      String text = (regExpMatch.group(11)).toString();
-
-      print(text);
-
-      Duration startTime = Duration(
-          hours: startTimeHours,
-          minutes: startTimeMinutes,
-          seconds: startTimeSeconds,
-          milliseconds: startTimeMilliseconds);
-      Duration endTime = Duration(
-          hours: endTimeHours,
-          minutes: endTimeMinutes,
-          seconds: endTimeSeconds,
-          milliseconds: endTimeMilliseconds);
-
-      subtitleList.add(
-          Subtitle(startTime: startTime, endTime: endTime, text: text.trim()));
-    });
-
-    Subtitles subtitles = Subtitles(subtitles: subtitleList);
-    print("subtitles");
-    return subtitles;
   }
 
   void clearHideControlbarTimer() {

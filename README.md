@@ -2,7 +2,6 @@
   <a href="https://kohtut.dev/2020/08/05/yo-yo-player/"><img src="https://raw.githubusercontent.com/ko-htut/yoyo-player/master/yoyo_logo.png" alt="KoHtut"></a>
 </h1>
 
-- THIS PROJECT IS STILL UNDER CONSTRUCTION
 
 # YoYo Video Player
 
@@ -16,7 +15,6 @@ The [video_player](https://pub.dev/packages/yoyo_player) is a video player that 
 * You can select multiple quality and open
 * On video tap play/pause, mute/unmute, or perform any action on video.
 * Auto hide controls.
-* `srt`Video Subtitle Support
 * (.m3u8) HLS Video Streaming Support
 
 ## Install & Set up
@@ -83,11 +81,6 @@ Play With Subtitle
               child: Text("Loading video"),
             ),
           ),
-          //subtitle ( ...srt subtitle link )
-          //example ( subtitle:"https://eboxmovie.sgp1.digitaloceanspaces.com/mmmmtest.srt")
-          subtitle: "",
-          // subtitle style
-          subtitleStyle: SubtitleStyle(),
         ),
 ```
 
@@ -98,11 +91,9 @@ Play With Subtitle
 | Attributes        | Type                | Description                                |
 |-------------------|---------------------|--------------------------------------------|
 | url               | String              | Video source  ( .m3u8 & File only)         |
-| subtitle   Î      | String              | Subtitle (.srt)o source                    |
 | videoStyle        | VideoStyle          | Video Player  style                        |
 | videoLoadingStyle | VideoLoadingStyle   | Video Loading Style                        |
 | aspectRatio       | double              | Video AspectRaitio [aspectRatio : 16 / 9 ] |
-| subtitleStyle     | SubtitleStyle       | Video Subtitle Style                       |
 | onfullscreen      | VideoCallback<bool> | video state fullscreen                     |
 
 
@@ -124,14 +115,6 @@ Play With Subtitle
 | Attributes | Type   | Description                            |
 |------------|--------|----------------------------------------|
 | loading    | Widget | You can use any loading style you want |
-
-## Subtitle Style
-| Attributes | Type       | Description                             |
-|------------|------------|-----------------------------------------|
-| fontweight | FontWeight | You can use any Subtitle style you want |
-| colors     | Color      | You can use any Subtitle style you want |
-| background | Color      | You can use any Subtitle style you want |
-| fontSize   | double     | You can use any Subtitle style you want |
 
 ## Buy Me a Coffee
 
