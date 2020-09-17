@@ -33,3 +33,10 @@
 
 * FullScreen Support
 * Fix quality issues
+
+## [0.0.8] - 2020-09-17
+
+* change ui
+* fix audio streaming
+* remove sub support
+* Bug fix

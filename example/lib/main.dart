@@ -13,20 +13,14 @@ class MyApp extends StatelessWidget {
           child: YoYoPlayer(
             aspectRatio: 16 / 9,
             url:
-                // "",
-                // "https://llvod.mxplay.com/video/40b2e2c7e16b5d6621e3bebe8f48063e/1/hls/h264_high.m3u8",
+                // "https://player.vimeo.com/external/440218055.m3u8?s=7ec886b4db9c3a52e0e7f5f917ba7287685ef67f&oauth2_token_id=1360367101",
                 "https://sfux-ext.sfux.info/hls/chapter/105/1588724110/1588724110.m3u8",
-            // "https://llvod.mxplay.com/video/6998aa0812ce347231c23033a98f31dc/11/hls/h264_baseline.m3u8",
             videoStyle: VideoStyle(),
             videoLoadingStyle: VideoLoadingStyle(
               loading: Center(
                 child: Text("Loading video"),
               ),
             ),
-            // options: PlayeOptions(url: "https://eboxmovie.sgp1.digitaloceanspaces.com/mmmmtest.srt" ),
-            // subtitle:
-            //     "https://eboxmovie.sgp1.digitaloceanspaces.com/mmmmtest.srt",
-            // subtitleStyle: SubtitleStyle(),
           ),
         ),
       ),

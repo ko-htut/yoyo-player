@@ -240,8 +240,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                     width: 5,
                   ),
                   topchip(
-                    Text(m3u8quality,
-                        style: widget.videoStyle.qualitystyle),
+                    Text(m3u8quality, style: widget.videoStyle.qualitystyle),
                     () {
                       // quality function
                       m3u8show = true;
@@ -250,9 +249,12 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                   Container(
                     width: 5,
                   ),
-                  Icon(
-                    Icons.fullscreen,
-                    color: Colors.white,
+                  InkWell(
+                    onTap: () => toggleFullScreen(),
+                    child: Icon(
+                      Icons.fullscreen,
+                      color: Colors.white,
+                    ),
                   ),
                   Container(
                     width: 5,
@@ -381,7 +383,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   Future<M3U8s> m3u8video(String video) async {
     yoyo.add(M3U8pass(dataquality: "Auto", dataurl: video));
-    RegExp regExpAudio = new RegExp(Rexexresponse.regexMEDIA,
+    RegExp regExpAudio = new RegExp(
+      Rexexresponse.regexMEDIA,
       caseSensitive: false,
       multiLine: true,
     );

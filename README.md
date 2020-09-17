@@ -2,7 +2,6 @@
   <a href="https://kohtut.dev/2020/08/05/yo-yo-player/"><img src="https://raw.githubusercontent.com/ko-htut/yoyo-player/master/yoyo_logo.png" alt="KoHtut"></a>
 </h1>
 
-
 # YoYo Video Player
 
 YoYo Video Player is a HLS(.m3u8) video player for flutter.
@@ -42,12 +41,12 @@ import 'package:yoyo_player/yoyo_player.dart';
 A simple usage example:
 
 ```dart
-YoYoPlayer(
+  YoYoPlayer(
           aspectRatio: 16 / 9,
           url:  "",
           videoStyle: VideoStyle(),
           videoLoadingStyle: VideoLoadingStyle(),
-        ),
+  ),
 ```
 
 Change Icon
@@ -64,7 +63,7 @@ Change Icon
 
 Change Video Loading
 ```dart
- videoLoadingStyle: VideoLoadingStyle(loading : Center(child: Text("Loading video")),
+   videoLoadingStyle: VideoLoadingStyle(loading : Center(child: Text("Loading video")),
 ```
 
 Play With Subtitle
@@ -138,7 +137,7 @@ Play With Subtitle
 
 ## Player Screenshot
 | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss1.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss2.png) |
-|:--------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|
+|:-----------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
 | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss3.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss4.png) |
 
 # MIT License
