@@ -209,10 +209,10 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     final videoChildrens = <Widget>[
       GestureDetector(
         onTap: () {
-          // toggleControls();
+          toggleControls();
         },
         onDoubleTap: () {
-          // togglePlay();
+          togglePlay();
         },
         child: ClipRect(
           child: Container(
@@ -241,47 +241,52 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   /// Vieo Player ActionBar
   Widget actionBar() {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Container(
-        height: 40,
-        width: double.infinity,
-        // color: Colors.yellow,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            topchip(Text("Myanmar"), () {
-              // subtitle function
-            }),
-            Container(
-              width: 5,
+    return showMeau
+        ? Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              height: 40,
+              width: double.infinity,
+              // color: Colors.yellow,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  topchip(Text("Myanmar"), () {
+                    // subtitle function
+                  }),
+                  Container(
+                    width: 5,
+                  ),
+                  topchip(
+                    Text(m3u8quality + ":$_playtype",
+                        style: widget.videoStyle.qualitystyle),
+                    () {
+                      // quality function
+                      m3u8show = true;
+                    },
+                  ),
+                  Container(
+                    width: 5,
+                  ),
+                  Icon(
+                    Icons.fullscreen,
+                    color: Colors.white,
+                  ),
+                  Container(
+                    width: 5,
+                  ),
+                ],
+              ),
             ),
-            topchip(
-              Text(m3u8quality + ":$_playtype",
-                  style: widget.videoStyle.qualitystyle),
-              () {
-                // quality function
-                m3u8show = true;
-              },
-            ),
-            Container(
-              width: 5,
-            ),
-            Icon(
-              Icons.fullscreen,
-              color: Colors.white,
-            ),
-            Container(
-              width: 5,
-            ),
-          ],
-        ),
-      ),
-    );
+          )
+        : Container();
   }
 
   Widget subtitleShow() {
-    return Text("subtitle");
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Text("subtitle"),
+    );
   }
 
   Widget m3u8list() {
@@ -324,10 +329,20 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   List<Widget> videoBuiltInChildrens() {
     return [
       actionBar(),
-      subtitleShow(),
-      bottomBar(controller, "$videoSeek", "$videoDuration"),
-      m3u8list()
+      btm(),
+      m3u8list(),
     ];
+  }
+
+  Widget btm() {
+    return showMeau
+        ? bottomBar(
+            controller: controller,
+            videoSeek: "$videoSeek",
+            videoDuration: "$videoDuration",
+            showMeau: showMeau,
+            play: () => togglePlay())
+        : subtitleShow();
   }
 
   void urlcheck(String url) {
@@ -513,6 +528,54 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     }
   }
 
+  void createHideControlbarTimer() {
+    clearHideControlbarTimer();
+    showTime = Timer(Duration(milliseconds: 5000), () {
+      if (controller != null && controller.value.isPlaying) {
+        if (showMeau) {
+          setState(() {
+            showMeau = false;
+            m3u8show = false;
+            controlBarAnimationController.reverse();
+          });
+        }
+      }
+    });
+  }
+
+  void clearHideControlbarTimer() {
+    showTime?.cancel();
+  }
+
+  void toggleControls() {
+    clearHideControlbarTimer();
+
+    if (!showMeau) {
+      showMeau = true;
+      createHideControlbarTimer();
+    } else {
+      m3u8show = false;
+      showMeau = false;
+    }
+    setState(() {
+      if (showMeau) {
+        controlBarAnimationController.forward();
+      } else {
+        controlBarAnimationController.reverse();
+      }
+    });
+  }
+
+  void togglePlay() {
+    createHideControlbarTimer();
+    if (controller.value.isPlaying) {
+      controller.pause();
+    } else {
+      controller.play();
+    }
+    setState(() {});
+  }
+
   void videoInit(String url) {
     if (offline == false) {
       print(
@@ -564,7 +627,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       try {
         String text;
         final Directory directory = await getApplicationDocumentsDirectory();
-        final File file = File('${directory.path}/yoyo${data.dataquality}.m3u8');
+        final File file =
+            File('${directory.path}/yoyo${data.dataquality}.m3u8');
         print("read file success");
         text = await file.readAsString();
         print("data : $text  :: data");
