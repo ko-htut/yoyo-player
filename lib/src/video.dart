@@ -10,12 +10,14 @@ import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:http/http.dart' as http;
 import 'package:yoyo_player/src/utils/utils.dart';
+import 'package:yoyo_player/src/widget/subtitle_widget.dart';
 import 'package:yoyo_player/src/widget/widget_bottombar.dart';
 import '../yoyo_player.dart';
 import 'model/audio.dart';
 import 'model/m3u8.dart';
 import 'model/m3u8s.dart';
 import 'model/subtitle.dart';
+import 'model/subtitles.dart';
 import 'source/player_option.dart';
 import 'widget/top_chip.dart';
 
@@ -58,7 +60,7 @@ class YoYoPlayer extends StatefulWidget {
   ///   url : "https://example.com/index.srt",
   /// )
   /// ```
-  final PlayerOptions options;
+  final PlayeOptions options;
 
   /// video state fullscreen
   final VideoCallback<bool> onfullscreen;
@@ -151,6 +153,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   //
   @override
   void initState() {
+    // getsub();
     urlcheck(widget.url);
     super.initState();
 
@@ -282,13 +285,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         : Container();
   }
 
-  Widget subtitleShow() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Text("subtitle"),
-    );
-  }
-
   Widget m3u8list() {
     return m3u8show == true
         ? Align(
@@ -342,7 +338,40 @@ class _YoYoPlayerState extends State<YoYoPlayer>
             videoDuration: "$videoDuration",
             showMeau: showMeau,
             play: () => togglePlay())
-        : subtitleShow();
+        : subtitleplay(
+            controller: controller,
+            showSubtitles: showSubtitles,
+            subtitle: subtitle);
+  }
+
+  Widget subtitleplay(
+      {VideoPlayerController controller, showSubtitles, Subtitle subtitle}) {
+    return showSubtitles
+        ? Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(50),
+                borderRadius: BorderRadius.circular(5)),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(
+                "hello",
+                style: TextStyle(),
+              ),
+            ),
+          )
+        : Container(
+            child: Text("no subtitle"),
+          );
+  }
+
+  void getsub() {
+    if (widget.options.url != null) {
+      setState(() {
+        showSubtitles = true;
+        sublistener = true;
+      });
+      _subtitleWatcher();
+    }
   }
 
   void urlcheck(String url) {
@@ -524,7 +553,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       }
     }
     if (sublistener != false) {
-      // _subtitleWatcher(controller);
+      _subtitleWatcher();
     }
   }
 
@@ -541,6 +570,79 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         }
       }
     });
+  }
+
+  _subtitleWatcher() async {
+    Subtitles subtitles = await getSubtitles(widget.options.url);
+    // VideoPlayerValue latestValue =  videoPlayerController.value;
+    // Duration videoPlayerPosition = latestValue.position;
+    if (controller.value.position != null) {
+      subtitles.subtitles.forEach((Subtitle subtitleItem) {
+        if (controller.value.position.inMilliseconds >
+                subtitleItem.startTime.inMilliseconds &&
+            controller.value.position.inMilliseconds <
+                subtitleItem.endTime.inMilliseconds) {
+          if (this.mounted) {
+            setState(() {
+              subtitle = subtitleItem;
+            });
+          }
+        }
+      });
+    }
+
+  }
+
+  Future<Subtitles> getSubtitles(String subtitleUrl) async {
+    RegExp regExp = new RegExp(
+      r"^((\d{2}):(\d{2}):(\d{2}),(\d{3})) +--> +((\d{2}):(\d{2}):(\d{2}),(\d{2})).*[\r\n]+\s*((?:(?!\r?\n\r?).)*)",
+      caseSensitive: false,
+      multiLine: true,
+    );
+    if (subtitleContent == null && subtitleUrl != null) {
+      http.Response response = await http.get(subtitleUrl);
+      if (response.statusCode == 200) {
+        subtitleContent = utf8.decode(response.bodyBytes);
+      }
+    }
+    print(subtitleContent);
+
+    List<RegExpMatch> matches = regExp.allMatches(subtitleContent).toList();
+    List<Subtitle> subtitleList = List();
+    print("print ${subtitleList.length}");
+    matches.forEach((RegExpMatch regExpMatch) {
+      print("print startTimeHours : ${regExpMatch.group(2)}");
+      int startTimeHours = int.parse(regExpMatch.group(2));
+      int startTimeMinutes = int.parse(regExpMatch.group(3));
+      int startTimeSeconds = int.parse(regExpMatch.group(4));
+      int startTimeMilliseconds = int.parse(regExpMatch.group(5));
+
+      int endTimeHours = int.parse(regExpMatch.group(7));
+      int endTimeMinutes = int.parse(regExpMatch.group(8));
+      int endTimeSeconds = int.parse(regExpMatch.group(9));
+      int endTimeMilliseconds = int.parse(regExpMatch.group(10));
+      String text = (regExpMatch.group(11)).toString();
+
+      print(text);
+
+      Duration startTime = Duration(
+          hours: startTimeHours,
+          minutes: startTimeMinutes,
+          seconds: startTimeSeconds,
+          milliseconds: startTimeMilliseconds);
+      Duration endTime = Duration(
+          hours: endTimeHours,
+          minutes: endTimeMinutes,
+          seconds: endTimeSeconds,
+          milliseconds: endTimeMilliseconds);
+
+      subtitleList.add(
+          Subtitle(startTime: startTime, endTime: endTime, text: text.trim()));
+    });
+
+    Subtitles subtitles = Subtitles(subtitles: subtitleList);
+    print("subtitles");
+    return subtitles;
   }
 
   void clearHideControlbarTimer() {
@@ -649,7 +751,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         .catchError((e) => setState(() => hasInitError = true));
     controller.addListener(listener);
     controller.play();
-    // controller.seekTo(duration2);
   }
 
   void m3u8clean() async {

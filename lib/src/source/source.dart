@@ -1,5 +1,5 @@
 class Source {
   /// subtitle
-  String subtitle;
+  final String subtitle;
   Source({this.subtitle});
 }
