@@ -324,39 +324,44 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   void urlcheck(String url) {
     final netRegx = new RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
     final isNetwork = netRegx.hasMatch(url);
+    final a = Uri.parse(url);
+
+    print("parse url data end : ${a.pathSegments.last}");
     if (isNetwork) {
       setState(() {
         offline = false;
       });
-      if (url.endsWith("mkv")) {
-        if (widget.onpeningvideo != null) {
+      if (a.pathSegments.last.endsWith("mkv")) {
+        if (widget.onpeningvideo == null) {
           setState(() {
             _playtype = "MKV";
           });
-          widget.onpeningvideo("MKV");
+          print("urlend : mkv");
+          // widget.onpeningvideo("MKV");
         }
         videoControllSetup(url);
-      } else if (url.endsWith("mp4")) {
-        if (widget.onpeningvideo != null) {
+      } else if (a.pathSegments.last.endsWith("mp4")) {
+        if (widget.onpeningvideo == null) {
           setState(() {
             _playtype = "MP4";
           });
-          widget.onpeningvideo("MP4");
+          print("urlend : mp4 $_playtype");
+          // widget.onpeningvideo("MP4");
         }
+        print("urlend : mp4");
         videoControllSetup(url);
-      } else if (url.endsWith("m3u8")) {
-        if (widget.onpeningvideo != null) {
+      } else if (a.pathSegments.last.endsWith("m3u8")) {
+        if (widget.onpeningvideo == null) {
           setState(() {
             _playtype = "HLS";
           });
-          widget.onpeningvideo("M3U8");
+          // widget.onpeningvideo("M3U8");
         }
-        setState(() {
-          _playtype = "source";
-        });
+        print("urlend : m3u8");
         videoControllSetup(url);
         getm3u8(url);
       } else {
+        print("urlend : null");
         videoControllSetup(url);
         getm3u8(url);
       }
@@ -552,11 +557,20 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     if (offline == false) {
       print(
           "--- Player Status ---\nplay url : $url\noffline : $offline\n--- start playing –––");
-      controller =
-          VideoPlayerController.network(url, formatHint: VideoFormat.hls)
-            ..initialize()
-                .then((_) => setState(() => hasInitError = false))
-                .catchError((e) => setState(() => hasInitError = true));
+
+      if (_playtype == "MP4") {
+        // Play MP4
+        controller = VideoPlayerController.network(url,formatHint: VideoFormat.other)..initialize();
+      } else if (_playtype == "MKV") {
+        controller =
+            VideoPlayerController.network(url,formatHint: VideoFormat.dash)..initialize();
+      } else if (_playtype == "HLS") {
+        controller =
+            VideoPlayerController.network(url, formatHint: VideoFormat.hls)
+              ..initialize()
+                  .then((_) => setState(() => hasInitError = false))
+                  .catchError((e) => setState(() => hasInitError = true));
+      }
     } else {
       print(
           "--- Player Status ---\nplay url : $url\noffline : $offline\n--- start playing –––");
