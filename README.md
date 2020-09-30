@@ -94,6 +94,7 @@ Play With Subtitle
 | videoLoadingStyle | VideoLoadingStyle   | Video Loading Style                        |
 | aspectRatio       | double              | Video AspectRaitio [aspectRatio : 16 / 9 ] |
 | onfullscreen      | VideoCallback<bool> | video state fullscreen                     |
+| openingvideo      | VideoCallback<bool> | video type ( eg : mkv,mp4,hls)                    |
 
 
 ## Player custom style (VideoStyle)
@@ -115,9 +116,9 @@ Play With Subtitle
 |------------|--------|----------------------------------------|
 | loading    | Widget | You can use any loading style you want |
 
-## Buy Me a Coffee
+<!-- ## Buy Me a Coffee
 
-<a href="https://www.buymeacoffee.com/kohtut" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/arial-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/kohtut" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/arial-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a> -->
 
 ## How is it created ?
   - The data in the source url (m3u8) is regex checked and the child m3u8 files are created and saved according to the respective rules.
