@@ -87,7 +87,7 @@ class YoYoPlayer extends StatefulWidget {
 class _YoYoPlayerState extends State<YoYoPlayer>
     with SingleTickerProviderStateMixin {
   //vieo play type (hls,mp4,mkv,offline)
-  String _playtype;
+  String playtype;
   // Animation Controller
   AnimationController controlBarAnimationController;
   // Video Top Bar Animation
@@ -334,7 +334,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       if (a.pathSegments.last.endsWith("mkv")) {
         if (widget.onpeningvideo == null) {
           setState(() {
-            _playtype = "MKV";
+            playtype = "MKV";
           });
           print("urlend : mkv");
           // widget.onpeningvideo("MKV");
@@ -343,9 +343,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       } else if (a.pathSegments.last.endsWith("mp4")) {
         if (widget.onpeningvideo == null) {
           setState(() {
-            _playtype = "MP4";
+            playtype = "MP4";
           });
-          print("urlend : mp4 $_playtype");
+          print("urlend : mp4 $playtype");
           // widget.onpeningvideo("MP4");
         }
         print("urlend : mp4");
@@ -353,7 +353,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       } else if (a.pathSegments.last.endsWith("m3u8")) {
         if (widget.onpeningvideo == null) {
           setState(() {
-            _playtype = "HLS";
+            playtype = "HLS";
           });
           // widget.onpeningvideo("M3U8");
         }
@@ -558,13 +558,13 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       print(
           "--- Player Status ---\nplay url : $url\noffline : $offline\n--- start playing –––");
 
-      if (_playtype == "MP4") {
+      if (playtype == "MP4") {
         // Play MP4
         controller = VideoPlayerController.network(url,formatHint: VideoFormat.other)..initialize();
-      } else if (_playtype == "MKV") {
+      } else if (playtype == "MKV") {
         controller =
             VideoPlayerController.network(url,formatHint: VideoFormat.dash)..initialize();
-      } else if (_playtype == "HLS") {
+      } else if (playtype == "HLS") {
         controller =
             VideoPlayerController.network(url, formatHint: VideoFormat.hls)
               ..initialize()
