@@ -40,3 +40,7 @@
 * fix audio streaming
 * remove sub support
 * Bug fix
+
+## [0.1.0] - 2020-10-19
+
+* dependencies update

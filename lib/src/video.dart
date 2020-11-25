@@ -560,10 +560,13 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
       if (playtype == "MP4") {
         // Play MP4
-        controller = VideoPlayerController.network(url,formatHint: VideoFormat.other)..initialize();
+        controller =
+            VideoPlayerController.network(url, formatHint: VideoFormat.other)
+              ..initialize();
       } else if (playtype == "MKV") {
         controller =
-            VideoPlayerController.network(url,formatHint: VideoFormat.dash)..initialize();
+            VideoPlayerController.network(url, formatHint: VideoFormat.dash)
+              ..initialize();
       } else if (playtype == "HLS") {
         controller =
             VideoPlayerController.network(url, formatHint: VideoFormat.hls)
