@@ -17,6 +17,7 @@ import 'model/m3u8.dart';
 import 'model/m3u8s.dart';
 import 'responses/regex_response.dart';
 import 'widget/top_chip.dart';
+import 'dart:io' show Platform;
 
 typedef VideoCallback<T> = void Function(T t);
 
@@ -455,7 +456,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         );
         String audio = "";
         print("-- audio ---\naudio list length :${audio.length}");
-        if (audioList.length != 0) {
+
+        if (Platform.isAndroid) if (audioList.length != 0) {
           audio =
               """#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-medium",NAME="audio",AUTOSELECT=YES,DEFAULT=YES,CHANNELS="2",URI="${audioList.last.url}"\n""";
         } else {
@@ -614,20 +616,37 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       videoControllSetup(data.dataurl);
     } else {
       try {
-        String text;
-        final Directory directory = await getApplicationDocumentsDirectory();
-        final File file =
-            File('${directory.path}/yoyo${data.dataquality}.m3u8');
-        print("read file success");
-        text = await file.readAsString();
-        print("data : $text  :: data");
-        localm3u8play(file);
+        if (Platform.isAndroid) {
+          // Android-specific code
+          String text;
+          final Directory directory = await getApplicationDocumentsDirectory();
+          final File file =
+              File('${directory.path}/yoyo${data.dataquality}.m3u8');
+          print("read file success");
+          text = await file.readAsString();
+          print("data : $text  :: data");
+          localm3u8play(file);
+        } else if (Platform.isIOS) {
+          // iOS-specific code
+          iosqualityplay(data.dataurl);
+        }
+
         // videoControllSetup(file);
       } catch (e) {
         print("Couldn't read file ${data.dataquality} e: $e");
       }
       print("data : ${data.dataquality}");
     }
+  }
+
+  void iosqualityplay(String url) {
+    controller = VideoPlayerController.network(
+      url,
+    )..initialize()
+        .then((_) => setState(() => hasInitError = false))
+        .catchError((e) => setState(() => hasInitError = true));
+    controller.addListener(listener);
+    controller.play();
   }
 
   void localm3u8play(File file) {
