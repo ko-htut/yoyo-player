@@ -141,6 +141,10 @@ Play With Subtitle
 |:-----------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
 | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss3.png) | ![](https://raw.githubusercontent.com/ko-htut/yoyo-player/master/img/ss4.png) |
 
+
+# Contributors 
+- Min Si Thu
+- Ko Htut
 # MIT License
 
 Copyright (c) 2020 Ko Htut (Ko Min Than Htut)
