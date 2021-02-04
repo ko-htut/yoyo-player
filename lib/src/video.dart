@@ -17,9 +17,6 @@ import 'model/m3u8.dart';
 import 'model/m3u8s.dart';
 import 'responses/regex_response.dart';
 import 'widget/top_chip.dart';
-import 'dart:io' show Platform;
-
-typedef VideoCallback<T> = void Function(T t);
 
 class YoYoPlayer extends StatefulWidget {
   ///Video[source],
@@ -53,10 +50,10 @@ class YoYoPlayer extends StatefulWidget {
   final double aspectRatio;
 
   /// video state fullscreen
-  final VideoCallback<bool> onfullscreen;
+  final void Function(bool fullScreenTurnedOn) onFullScreen;
 
   /// video Type
-  final VideoCallback<String> onpeningvideo;
+  final void Function(String videoType) onPlayingVideo;
 
   ///
   /// ```dart
@@ -77,8 +74,8 @@ class YoYoPlayer extends StatefulWidget {
     @required this.aspectRatio,
     this.videoStyle,
     this.videoLoadingStyle,
-    this.onfullscreen,
-    this.onpeningvideo,
+    this.onFullScreen,
+    this.onPlayingVideo,
   }) : super(key: key);
 
   @override
@@ -122,7 +119,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   // video full screen
   bool fullscreen = false;
   // menu show
-  bool showMeau = false;
+  bool showMenu = false;
   // auto show subtitle
   bool showSubtitles = false;
   // video status
@@ -137,7 +134,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   @override
   void initState() {
     // getsub();
-    urlcheck(widget.url);
+    urlCheck(widget.url);
     super.initState();
 
     /// Control bar animation
@@ -166,8 +163,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
           setState(() {
             fullscreen = !fullscreen;
             _navigateLocally(context);
-            if (widget.onfullscreen != null) {
-              widget.onfullscreen(fullscreen);
+            if (widget.onFullScreen != null) {
+              widget.onFullScreen(fullscreen);
             }
           });
         }
@@ -227,7 +224,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   /// Vieo Player ActionBar
   Widget actionBar() {
-    return showMeau
+    return showMenu
         ? Align(
             alignment: Alignment.topCenter,
             child: Container(
@@ -312,19 +309,21 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   }
 
   Widget btm() {
-    return showMeau
+    return showMenu
         ? bottomBar(
             controller: controller,
             videoSeek: "$videoSeek",
             videoDuration: "$videoDuration",
-            showMeau: showMeau,
+            forwardIcon: widget.videoStyle.forward,
+            backwardIcon: widget.videoStyle.backward,
+            showMenu: showMenu,
             play: () => togglePlay())
         : Container();
   }
 
-  void urlcheck(String url) {
-    final netRegx = new RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
-    final isNetwork = netRegx.hasMatch(url);
+  void urlCheck(String url) {
+    final netRegex = new RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
+    final isNetwork = netRegex.hasMatch(url);
     final a = Uri.parse(url);
 
     print("parse url data end : ${a.pathSegments.last}");
@@ -333,30 +332,30 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         offline = false;
       });
       if (a.pathSegments.last.endsWith("mkv")) {
-        if (widget.onpeningvideo == null) {
+        if (widget.onPlayingVideo == null) {
           setState(() {
             playtype = "MKV";
           });
           print("urlend : mkv");
-          // widget.onpeningvideo("MKV");
+          // widget.onPlayingVideo("MKV");
         }
         videoControllSetup(url);
       } else if (a.pathSegments.last.endsWith("mp4")) {
-        if (widget.onpeningvideo == null) {
+        if (widget.onPlayingVideo == null) {
           setState(() {
             playtype = "MP4";
           });
           print("urlend : mp4 $playtype");
-          // widget.onpeningvideo("MP4");
+          // widget.onPlayingVideo("MP4");
         }
         print("urlend : mp4");
         videoControllSetup(url);
       } else if (a.pathSegments.last.endsWith("m3u8")) {
-        if (widget.onpeningvideo == null) {
+        if (widget.onPlayingVideo == null) {
           setState(() {
             playtype = "HLS";
           });
-          // widget.onpeningvideo("M3U8");
+          // widget.onPlayingVideo("M3U8");
         }
         print("urlend : m3u8");
         videoControllSetup(url);
@@ -456,8 +455,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         );
         String audio = "";
         print("-- audio ---\naudio list length :${audio.length}");
-
-        if (Platform.isAndroid) if (audioList.length != 0) {
+        if (audioList.length != 0) {
           audio =
               """#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-medium",NAME="audio",AUTOSELECT=YES,DEFAULT=YES,CHANNELS="2",URI="${audioList.last.url}"\n""";
         } else {
@@ -511,9 +509,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     clearHideControlbarTimer();
     showTime = Timer(Duration(milliseconds: 5000), () {
       if (controller != null && controller.value.isPlaying) {
-        if (showMeau) {
+        if (showMenu) {
           setState(() {
-            showMeau = false;
+            showMenu = false;
             m3u8show = false;
             controlBarAnimationController.reverse();
           });
@@ -529,15 +527,15 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   void toggleControls() {
     clearHideControlbarTimer();
 
-    if (!showMeau) {
-      showMeau = true;
+    if (!showMenu) {
+      showMenu = true;
       createHideControlbarTimer();
     } else {
       m3u8show = false;
-      showMeau = false;
+      showMenu = false;
     }
     setState(() {
-      if (showMeau) {
+      if (showMenu) {
         controlBarAnimationController.forward();
       } else {
         controlBarAnimationController.reverse();
@@ -616,37 +614,20 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       videoControllSetup(data.dataurl);
     } else {
       try {
-        if (Platform.isAndroid) {
-          // Android-specific code
-          String text;
-          final Directory directory = await getApplicationDocumentsDirectory();
-          final File file =
-              File('${directory.path}/yoyo${data.dataquality}.m3u8');
-          print("read file success");
-          text = await file.readAsString();
-          print("data : $text  :: data");
-          localm3u8play(file);
-        } else if (Platform.isIOS) {
-          // iOS-specific code
-          iosqualityplay(data.dataurl);
-        }
-
+        String text;
+        final Directory directory = await getApplicationDocumentsDirectory();
+        final File file =
+            File('${directory.path}/yoyo${data.dataquality}.m3u8');
+        print("read file success");
+        text = await file.readAsString();
+        print("data : $text  :: data");
+        localm3u8play(file);
         // videoControllSetup(file);
       } catch (e) {
         print("Couldn't read file ${data.dataquality} e: $e");
       }
       print("data : ${data.dataquality}");
     }
-  }
-
-  void iosqualityplay(String url) {
-    controller = VideoPlayerController.network(
-      url,
-    )..initialize()
-        .then((_) => setState(() => hasInitError = false))
-        .catchError((e) => setState(() => hasInitError = true));
-    controller.addListener(listener);
-    controller.play();
   }
 
   void localm3u8play(File file) {

@@ -6,9 +6,19 @@ Widget bottomBar(
     {VideoPlayerController controller,
     String videoSeek,
     String videoDuration,
-    bool showMeau,
+    Widget backwardIcon = const Icon(
+      Icons.fast_rewind_rounded,
+      color: Colors.white,
+      size: 30,
+    ),
+    Widget forwardIcon = const Icon(
+      Icons.fast_forward_rounded,
+      color: Colors.white,
+      size: 30,
+    ),
+    bool showMenu,
     Function play}) {
-  return showMeau
+  return showMenu
       ? Align(
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -57,35 +67,25 @@ Widget bottomBar(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           InkWell(
-                            onTap: () {
-                              rewind(controller);
-                            },
-                            child: Icon(
-                              Icons.skip_previous,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
+                              onTap: () {
+                                rewind(controller);
+                              },
+                              child: backwardIcon),
                           InkWell(
                             onTap: play,
                             child: Icon(
                               controller.value.isPlaying
-                                  ? Icons.play_circle_outline
-                                  : Icons.pause_circle_outline,
+                                  ? Icons.pause_circle_outline
+                                  : Icons.play_circle_outline,
                               color: Colors.white,
                               size: 35,
                             ),
                           ),
                           InkWell(
-                            onTap: () {
-                              fastForward(controller: controller);
-                            },
-                            child: Icon(
-                              Icons.skip_next,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
+                              onTap: () {
+                                fastForward(controller: controller);
+                              },
+                              child: forwardIcon),
                         ],
                       ),
                     ),
