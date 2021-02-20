@@ -6,16 +6,8 @@ Widget bottomBar(
     {VideoPlayerController controller,
     String videoSeek,
     String videoDuration,
-    Widget backwardIcon = const Icon(
-      Icons.fast_rewind_rounded,
-      color: Colors.white,
-      size: 30,
-    ),
-    Widget forwardIcon = const Icon(
-      Icons.fast_forward_rounded,
-      color: Colors.white,
-      size: 30,
-    ),
+    Widget backwardIcon,
+    Widget forwardIcon,
     bool showMenu,
     Function play}) {
   return showMenu

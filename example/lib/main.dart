@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
               ),
-              onfullscreen: (t) {
+              onFullScreen: (t) {
                 setState(() {
                   fullscreen = t;
                 });
