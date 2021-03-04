@@ -3,13 +3,13 @@ import 'package:video_player/video_player.dart';
 import 'package:yoyo_player/src/responses/play_response.dart';
 
 Widget bottomBar(
-    {VideoPlayerController controller,
-    String videoSeek,
-    String videoDuration,
-    Widget backwardIcon,
-    Widget forwardIcon,
-    bool showMenu,
-    Function play}) {
+    {required VideoPlayerController controller,
+    required String videoSeek,
+    required String videoDuration,
+    required Widget backwardIcon,
+    required Widget forwardIcon,
+    required bool showMenu,
+    required Function play}) {
   return showMenu
       ? Align(
           alignment: Alignment.bottomCenter,
@@ -64,7 +64,7 @@ Widget bottomBar(
                               },
                               child: backwardIcon),
                           InkWell(
-                            onTap: play,
+                            onTap: play(),
                             child: Icon(
                               controller.value.isPlaying
                                   ? Icons.pause_circle_outline

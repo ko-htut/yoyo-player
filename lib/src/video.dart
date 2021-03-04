@@ -69,13 +69,13 @@ class YoYoPlayer extends StatefulWidget {
   /// )
   /// ```
   YoYoPlayer({
-    Key key,
-    @required this.url,
-    @required this.aspectRatio,
-    this.videoStyle,
-    this.videoLoadingStyle,
-    this.onFullScreen,
-    this.onPlayingVideo,
+    Key? key,
+    required this.url,
+    required this.aspectRatio,
+    required this.videoStyle,
+    required this.videoLoadingStyle,
+    required this.onFullScreen,
+    required this.onPlayingVideo,
   }) : super(key: key);
 
   @override
@@ -85,35 +85,37 @@ class YoYoPlayer extends StatefulWidget {
 class _YoYoPlayerState extends State<YoYoPlayer>
     with SingleTickerProviderStateMixin {
   //video play type (hls,mp4,mkv,offline)
-  String playType;
+  late String playType;
   // Animation Controller
-  AnimationController controlBarAnimationController;
+  late AnimationController controlBarAnimationController;
   // Video Top Bar Animation
-  Animation<double> controlTopBarAnimation;
+  late Animation<double> controlTopBarAnimation;
   // Video Bottom Bar Animation
-  Animation<double> controlBottomBarAnimation;
+  late Animation<double> controlBottomBarAnimation;
   // Video Player Controller
-  VideoPlayerController controller;
+  late VideoPlayerController controller;
   // Video init error default :false
   bool hasInitError = false;
   // Video Total Time duration
-  String videoDuration;
+  late String videoDuration;
   // Video Seed to
-  String videoSeek;
+  late String videoSeek;
   // Video duration 1
-  Duration duration;
+  late Duration duration;
   // video seek second by user
-  double videoSeekSecond;
+  late double videoSeekSecond;
   // video duration second
-  double videoDurationSecond;
+  late double videoDurationSecond;
   //m3u8 data video list for user choice
-  List<M3U8pass> yoyo = List();
+
+  List<M3U8pass> yoyo = [];
   // m3u8 audio list
-  List<AUDIO> audioList = List();
+
+  List<AUDIO> audioList = [];
   // m3u8 temp data
-  String m3u8Content;
+  late String m3u8Content;
   // subtitle temp data
-  String subtitleContent;
+  late String subtitleContent;
   // menu show m3u8 list
   bool m3u8show = false;
   // video full screen
@@ -123,11 +125,11 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   // auto show subtitle
   bool showSubtitles = false;
   // video status
-  bool offline;
+  late bool offline;
   // video auto quality
   String m3u8quality = "Auto";
   // time for duration
-  Timer showTime;
+  late Timer showTime;
   //Current ScreenSize
   Size get screenSize => MediaQuery.of(context).size;
   //
@@ -146,11 +148,11 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         .animate(controlBarAnimationController);
     var widgetsBinding = WidgetsBinding.instance;
 
-    widgetsBinding.addPostFrameCallback((callback) {
+    widgetsBinding!.addPostFrameCallback((callback) {
       widgetsBinding.addPersistentFrameCallback((callback) {
         if (context == null) return;
         var orientation = MediaQuery.of(context).orientation;
-        bool _fullscreen;
+        late bool _fullscreen;
         if (orientation == Orientation.landscape) {
           //Horizontal screen
           _fullscreen = true;
@@ -399,7 +401,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       () {
         if (m3u8Content != null) {
           print("--- HLS Old Data ----\n$m3u8Content");
-          m3u8Content = null;
+          m3u8Content = "";
         }
       },
     );
@@ -428,7 +430,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
           url = sourceURL;
         } else {
           print(match);
-          final dataURL = match.group(0);
+          final dataURL = match!.group(0);
           url = "$dataURL$sourceURL";
           print("--- hls child url integration ---\nchild url :$url");
         }
@@ -442,7 +444,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
               auURL = audioURL;
             } else {
               print(match);
-              final auDataURL = match.group(0);
+              final auDataURL = match!.group(0);
               auURL = "$auDataURL$audioURL";
               print("url network audio  $url $audioURL");
             }
@@ -518,7 +520,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   }
 
   void clearHideControlBarTimer() {
-    showTime?.cancel();
+    showTime.cancel();
   }
 
   void toggleControls() {
@@ -595,12 +597,13 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   void _navigateLocally(context) async {
     if (!fullScreen) {
-      if (ModalRoute.of(context).willHandlePopInternally) {
+      if (ModalRoute.of(context)!.willHandlePopInternally) {
         Navigator.of(context).pop();
       }
       return;
     }
-    ModalRoute.of(context).addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
+    ModalRoute.of(context)!
+        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
       if (fullScreen) toggleFullScreen();
     }));
   }
