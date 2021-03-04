@@ -81,11 +81,7 @@ class YoYoPlayer extends StatefulWidget {
     required this.videoStyle,
     required this.videoLoadingStyle,
     required this.onFullScreen,
-<<<<<<< HEAD
     this.onPlayingVideo,
-=======
-    required this.onPlayingVideo,
->>>>>>> 65540c674f469e4eb568a5f1ce452595eeeb610f
   }) : super(key: key);
 
   @override
@@ -95,7 +91,6 @@ class YoYoPlayer extends StatefulWidget {
 class _YoYoPlayerState extends State<YoYoPlayer>
     with SingleTickerProviderStateMixin {
   //video play type (hls,mp4,mkv,offline)
-<<<<<<< HEAD
   String? playType;
   // Animation Controller
   late AnimationController controlBarAnimationController;
@@ -103,21 +98,11 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   Animation<double>? controlTopBarAnimation;
   // Video Bottom Bar Animation
   Animation<double>? controlBottomBarAnimation;
-=======
-  late String playType;
-  // Animation Controller
-  late AnimationController controlBarAnimationController;
-  // Video Top Bar Animation
-  late Animation<double> controlTopBarAnimation;
-  // Video Bottom Bar Animation
-  late Animation<double> controlBottomBarAnimation;
->>>>>>> 65540c674f469e4eb568a5f1ce452595eeeb610f
   // Video Player Controller
   late VideoPlayerController controller;
   // Video init error default :false
   bool hasInitError = false;
   // Video Total Time duration
-<<<<<<< HEAD
   String? videoDuration;
   // Video Seed to
   String? videoSeek;
@@ -127,17 +112,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   double? videoSeekSecond;
   // video duration second
   double? videoDurationSecond;
-=======
-  late String videoDuration;
-  // Video Seed to
-  late String videoSeek;
-  // Video duration 1
-  late Duration duration;
-  // video seek second by user
-  late double videoSeekSecond;
-  // video duration second
-  late double videoDurationSecond;
->>>>>>> 65540c674f469e4eb568a5f1ce452595eeeb610f
   //m3u8 data video list for user choice
 
   List<M3U8pass> yoyo = [];
@@ -145,15 +119,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   List<AUDIO> audioList = [];
   // m3u8 temp data
-<<<<<<< HEAD
   String? m3u8Content;
   // subtitle temp data
   String? subtitleContent;
-=======
-  late String m3u8Content;
-  // subtitle temp data
-  late String subtitleContent;
->>>>>>> 65540c674f469e4eb568a5f1ce452595eeeb610f
   // menu show m3u8 list
   bool m3u8show = false;
   // video full screen
@@ -163,19 +131,12 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   // auto show subtitle
   bool showSubtitles = false;
   // video status
-<<<<<<< HEAD
   bool? offline;
-=======
-  late bool offline;
->>>>>>> 65540c674f469e4eb568a5f1ce452595eeeb610f
   // video auto quality
   String m3u8quality = "Auto";
   // time for duration
   late Timer showTime;
-<<<<<<< HEAD
 
-=======
->>>>>>> 65540c674f469e4eb568a5f1ce452595eeeb610f
   //Current ScreenSize
   Size get screenSize => MediaQuery.of(context).size;
   //
