@@ -43,6 +43,16 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+<<<<<<< HEAD
+=======
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.16.2"
+>>>>>>> 65540c674f469e4eb568a5f1ce452595eeeb610f
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -337,5 +347,10 @@ packages:
     source: path
     version: "0.1.0"
 sdks:
+<<<<<<< HEAD
   dart: ">=2.12.0 <3.0.0"
   flutter: ">=1.24.0-0"
+=======
+  dart: ">=2.12.0-0.0 <3.0.0"
+  flutter: ">=1.20.0"
+>>>>>>> 65540c674f469e4eb568a5f1ce452595eeeb610f
