@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget topchip(Widget data, Function fun) {
+Widget topChip(Widget data, Function fun) {
   return InkWell(
     onTap: fun,
     child: Container(

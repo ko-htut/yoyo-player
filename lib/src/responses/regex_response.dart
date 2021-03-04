@@ -1,4 +1,4 @@
-class Rexexresponse {
+class RegexResponse {
   static String regexMAIN =
       "#EXT-X-STREAM-INF:(?:.*,RESOLUTION=(\d+x\d+))?:.*,\r?\n(.*)";
   static String regexMEDIA =

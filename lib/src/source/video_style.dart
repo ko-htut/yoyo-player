@@ -6,13 +6,19 @@ class VideoStyle {
     this.play = const Icon(Icons.play_arrow),
     this.pause = const Icon(Icons.pause),
     this.fullscreen = const Icon(Icons.fullscreen),
-    this.forward = const Icon(Icons.skip_next),
-    this.backward = const Icon(Icons.skip_previous),
+    this.forward = const Icon(
+      Icons.fast_forward_rounded,
+      color: Colors.white,
+    ),
+    this.backward = const Icon(
+      Icons.fast_rewind_rounded,
+      color: Colors.white,
+    ),
     this.playedColor = Colors.green,
     this.qualitystyle = const TextStyle(
       color: Colors.white,
     ),
-    this.qashowstyle = const TextStyle(
+    this.qaShowStyle = const TextStyle(
       color: Colors.white,
     ),
   });
@@ -24,5 +30,5 @@ class VideoStyle {
   final Widget backward;
   final Color playedColor;
   final TextStyle qualitystyle;
-  final TextStyle qashowstyle;
+  final TextStyle qaShowStyle;
 }
