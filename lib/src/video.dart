@@ -2,12 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:orientation/orientation.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:path_provider/path_provider.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:wakelock/wakelock.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:http/http.dart' as http;
 import 'package:yoyo_player/src/utils/utils.dart';
 import 'package:yoyo_player/src/widget/widget_bottombar.dart';
@@ -53,7 +59,7 @@ class YoYoPlayer extends StatefulWidget {
   final void Function(bool fullScreenTurnedOn) onFullScreen;
 
   /// video Type
-  final void Function(String videoType) onPlayingVideo;
+  final void Function(String videoType)? onPlayingVideo;
 
   ///
   /// ```dart
@@ -69,12 +75,12 @@ class YoYoPlayer extends StatefulWidget {
   /// )
   /// ```
   YoYoPlayer({
-    Key key,
-    @required this.url,
-    @required this.aspectRatio,
-    this.videoStyle,
-    this.videoLoadingStyle,
-    this.onFullScreen,
+    Key? key,
+    required this.url,
+    required this.aspectRatio,
+    required this.videoStyle,
+    required this.videoLoadingStyle,
+    required this.onFullScreen,
     this.onPlayingVideo,
   }) : super(key: key);
 
@@ -85,35 +91,37 @@ class YoYoPlayer extends StatefulWidget {
 class _YoYoPlayerState extends State<YoYoPlayer>
     with SingleTickerProviderStateMixin {
   //video play type (hls,mp4,mkv,offline)
-  String playType;
+  String? playType;
   // Animation Controller
-  AnimationController controlBarAnimationController;
+  late AnimationController controlBarAnimationController;
   // Video Top Bar Animation
-  Animation<double> controlTopBarAnimation;
+  Animation<double>? controlTopBarAnimation;
   // Video Bottom Bar Animation
-  Animation<double> controlBottomBarAnimation;
+  Animation<double>? controlBottomBarAnimation;
   // Video Player Controller
-  VideoPlayerController controller;
+  late VideoPlayerController controller;
   // Video init error default :false
   bool hasInitError = false;
   // Video Total Time duration
-  String videoDuration;
+  String? videoDuration;
   // Video Seed to
-  String videoSeek;
+  String? videoSeek;
   // Video duration 1
-  Duration duration;
+  Duration? duration;
   // video seek second by user
-  double videoSeekSecond;
+  double? videoSeekSecond;
   // video duration second
-  double videoDurationSecond;
+  double? videoDurationSecond;
   //m3u8 data video list for user choice
-  List<M3U8pass> yoyo = List();
+
+  List<M3U8pass> yoyo = [];
   // m3u8 audio list
-  List<AUDIO> audioList = List();
+
+  List<AUDIO> audioList = [];
   // m3u8 temp data
-  String m3u8Content;
+  String? m3u8Content;
   // subtitle temp data
-  String subtitleContent;
+  String? subtitleContent;
   // menu show m3u8 list
   bool m3u8show = false;
   // video full screen
@@ -123,11 +131,12 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   // auto show subtitle
   bool showSubtitles = false;
   // video status
-  bool offline;
+  bool? offline;
   // video auto quality
   String m3u8quality = "Auto";
   // time for duration
-  Timer showTime;
+  late Timer showTime;
+
   //Current ScreenSize
   Size get screenSize => MediaQuery.of(context).size;
   //
@@ -146,11 +155,11 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         .animate(controlBarAnimationController);
     var widgetsBinding = WidgetsBinding.instance;
 
-    widgetsBinding.addPostFrameCallback((callback) {
+    widgetsBinding!.addPostFrameCallback((callback) {
       widgetsBinding.addPersistentFrameCallback((callback) {
         if (context == null) return;
         var orientation = MediaQuery.of(context).orientation;
-        bool _fullscreen;
+        late bool _fullscreen;
         if (orientation == Orientation.landscape) {
           //Horizontal screen
           _fullscreen = true;
@@ -216,7 +225,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       aspectRatio: fullScreen
           ? calculateAspectRatio(context, screenSize)
           : widget.aspectRatio,
-      child: controller.value.initialized
+      child: controller.value.isInitialized
           ? Stack(children: videoChildren)
           : widget.videoLoadingStyle.loading,
     );
@@ -336,7 +345,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
           playType = "MKV";
         });
         print("urlEnd : mkv");
-        if (widget.onPlayingVideo != null) widget.onPlayingVideo("MKV");
+        if (widget.onPlayingVideo != null) widget.onPlayingVideo!("MKV");
 
         videoControlSetup(url);
       } else if (a.pathSegments.last.endsWith("mp4")) {
@@ -344,7 +353,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
           playType = "MP4";
         });
         print("urlEnd : mp4 $playType");
-        if (widget.onPlayingVideo != null) widget.onPlayingVideo("MP4");
+        if (widget.onPlayingVideo != null) widget.onPlayingVideo!("MP4");
 
         print("urlEnd : mp4");
         videoControlSetup(url);
@@ -352,7 +361,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         setState(() {
           playType = "HLS";
         });
-        if (widget.onPlayingVideo != null) widget.onPlayingVideo("M3U8");
+        if (widget.onPlayingVideo != null) widget.onPlayingVideo!("M3U8");
 
         print("urlEnd : m3u8");
         videoControlSetup(url);
@@ -399,19 +408,21 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       () {
         if (m3u8Content != null) {
           print("--- HLS Old Data ----\n$m3u8Content");
-          m3u8Content = null;
+          m3u8Content = "";
         }
       },
     );
+
+    // ignore: unnecessary_null_comparison
     if (m3u8Content == null && video != null) {
-      http.Response response = await http.get(video);
+      http.Response response = await http.get(Uri.parse(video));
       if (response.statusCode == 200) {
         m3u8Content = utf8.decode(response.bodyBytes);
       }
     }
-    List<RegExpMatch> matches = regExp.allMatches(m3u8Content).toList();
+    List<RegExpMatch> matches = regExp.allMatches(m3u8Content!).toList();
     List<RegExpMatch> audioMatches =
-        regExpAudio.allMatches(m3u8Content).toList();
+        regExpAudio.allMatches(m3u8Content!).toList();
     print(
         "--- HLS Data ----\n$m3u8Content \ntotal length: ${yoyo.length} \nfinish");
 
@@ -428,7 +439,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
           url = sourceURL;
         } else {
           print(match);
-          final dataURL = match.group(0);
+          final dataURL = match!.group(0);
           url = "$dataURL$sourceURL";
           print("--- hls child url integration ---\nchild url :$url");
         }
@@ -442,7 +453,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
               auURL = audioURL;
             } else {
               print(match);
-              final auDataURL = match.group(0);
+              final auDataURL = match!.group(0);
               auURL = "$auDataURL$audioURL";
               print("url network audio  $url $audioURL");
             }
@@ -484,8 +495,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
 // video Listener
   void listener() async {
-    if (controller.value.initialized && controller.value.isPlaying) {
-      if (!await Wakelock.isEnabled) {
+    if (controller.value.isInitialized && controller.value.isPlaying) {
+      if (!await Wakelock.enabled) {
         await Wakelock.enable();
       }
       setState(() {
@@ -495,7 +506,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         videoDurationSecond = controller.value.duration.inSeconds.toDouble();
       });
     } else {
-      if (await Wakelock.isEnabled) {
+      if (await Wakelock.enabled) {
         await Wakelock.disable();
         setState(() {});
       }
@@ -503,8 +514,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   }
 
   void createHideControlBarTimer() {
-    clearHideControlBarTimer();
     showTime = Timer(Duration(milliseconds: 5000), () {
+      // ignore: unnecessary_null_comparison
       if (controller != null && controller.value.isPlaying) {
         if (showMenu) {
           setState(() {
@@ -515,10 +526,11 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         }
       }
     });
+    clearHideControlBarTimer();
   }
 
   void clearHideControlBarTimer() {
-    showTime?.cancel();
+    showTime.cancel();
   }
 
   void toggleControls() {
@@ -595,12 +607,13 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   void _navigateLocally(context) async {
     if (!fullScreen) {
-      if (ModalRoute.of(context).willHandlePopInternally) {
+      if (ModalRoute.of(context)!.willHandlePopInternally) {
         Navigator.of(context).pop();
       }
       return;
     }
-    ModalRoute.of(context).addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
+    ModalRoute.of(context)!
+        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
       if (fullScreen) toggleFullScreen();
     }));
   }
