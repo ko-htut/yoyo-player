@@ -22,7 +22,7 @@ export 'src/list/yoyo_player_list_video_player.dart';
 export 'src/list/yoyo_player_list_video_player_controller.dart';
 export 'src/playlist/yoyo_player_playlist.dart';
 export 'src/playlist/yoyo_player_playlist_configuration.dart';
-export 'src/playlist/better_player_playlist_controller.dart';
+export 'src/playlist/yoyo_player_playlist_controller.dart';
 export 'src/subtitles/yoyo_player_subtitles_configuration.dart';
 export 'src/subtitles/yoyo_player_subtitles_source.dart';
 export 'src/subtitles/yoyo_player_subtitles_source_type.dart';

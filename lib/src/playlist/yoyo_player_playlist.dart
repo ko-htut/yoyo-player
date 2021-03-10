@@ -8,7 +8,7 @@ import 'package:yoyo_player/src/playlist/yoyo_player_playlist_configuration.dart
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:yoyo_player/src/playlist/better_player_playlist_controller.dart';
+import 'package:yoyo_player/src/playlist/yoyo_player_playlist_controller.dart';
 
 ///Special version of Better Player used to play videos in playlist.
 class YoYoPlayerPlaylist extends StatefulWidget {

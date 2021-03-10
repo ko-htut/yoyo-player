@@ -10,7 +10,7 @@ import 'package:yoyo_player/src/playlist/yoyo_player_playlist_configuration.dart
 ///Controller used to manage playlist player.
 class YoYoPlayerPlaylistController {
   ///List of data sources set for playlist.
-  final List<YoYoPlayerDataSource> _betterPlayerDataSourceList;
+  final List<YoYoPlayerDataSource> _yoyoPlayerDataSourceList;
 
   //General configuration of Better Player
   final YoYoPlayerConfiguration yoyoPlayerConfiguration;
@@ -19,7 +19,7 @@ class YoYoPlayerPlaylistController {
   final YoYoPlayerPlaylistConfiguration yoyoPlayerPlaylistConfiguration;
 
   ///BetterPlayerController instance
-  YoYoPlayerController? _betterPlayerController;
+  YoYoPlayerController? _yoyoPlayerController;
 
   ///Currently playing data source index
   int _currentDataSourceIndex = 0;
@@ -31,31 +31,31 @@ class YoYoPlayerPlaylistController {
   bool _changingToNextVideo = false;
 
   YoYoPlayerPlaylistController(
-    this._betterPlayerDataSourceList, {
+    this._yoyoPlayerDataSourceList, {
     this.yoyoPlayerConfiguration = const YoYoPlayerConfiguration(),
     this.yoyoPlayerPlaylistConfiguration =
         const YoYoPlayerPlaylistConfiguration(),
-  }) : assert(_betterPlayerDataSourceList.isNotEmpty,
+  }) : assert(_yoyoPlayerDataSourceList.isNotEmpty,
             "Better Player data source list can't be empty") {
     _setup();
   }
 
   ///Initialize controller and listeners.
   void _setup() {
-    _betterPlayerController = YoYoPlayerController(
+    _yoyoPlayerController = YoYoPlayerController(
       yoyoPlayerConfiguration,
       yoyoPlayerPlaylistConfiguration: yoyoPlayerPlaylistConfiguration,
     );
 
     var initialStartIndex = yoyoPlayerPlaylistConfiguration.initialStartIndex;
-    if (initialStartIndex >= _betterPlayerDataSourceList.length) {
+    if (initialStartIndex >= _yoyoPlayerDataSourceList.length) {
       initialStartIndex = 0;
     }
 
     _currentDataSourceIndex = initialStartIndex;
     setupDataSource(_currentDataSourceIndex);
-    _betterPlayerController!.addEventsListener(_handleEvent);
-    _nextVideoTimeStreamSubscription = _betterPlayerController!
+    _yoyoPlayerController!.addEventsListener(_handleEvent);
+    _nextVideoTimeStreamSubscription = _yoyoPlayerController!
         .nextVideoTimeStreamController.stream
         .listen((time) {
       if (time != null && time == 0) {
@@ -74,8 +74,8 @@ class YoYoPlayerPlaylistController {
     if (nextDataSourceId == -1) {
       return;
     }
-    if (_betterPlayerController!.isFullScreen) {
-      _betterPlayerController!.exitFullScreen();
+    if (_yoyoPlayerController!.isFullScreen) {
+      _yoyoPlayerController!.exitFullScreen();
     }
     _changingToNextVideo = true;
     setupDataSource(nextDataSourceId);
@@ -85,31 +85,30 @@ class YoYoPlayerPlaylistController {
 
   ///Handle BetterPlayerEvent from BetterPlayerController. Used to control
   ///startup of next video timer.
-  void _handleEvent(YoYoPlayerEvent betterPlayerEvent) {
-    if (betterPlayerEvent.yoyoPlayerEventType == YoYoPlayerEventType.finished) {
+  void _handleEvent(YoYoPlayerEvent yoyoPlayerEvent) {
+    if (yoyoPlayerEvent.yoyoPlayerEventType == YoYoPlayerEventType.finished) {
       if (_getNextDataSourceIndex() != -1) {
-        _betterPlayerController!.startNextVideoTimer();
+        _yoyoPlayerController!.startNextVideoTimer();
       }
     }
   }
 
-  ///Setup data source with index based on [_betterPlayerDataSourceList] provided
+  ///Setup data source with index based on [_yoyoPlayerDataSourceList] provided
   ///in constructor. Index must
   void setupDataSource(int index) {
     assert(
-        index >= 0 && index < _betterPlayerDataSourceList.length,
+        index >= 0 && index < _yoyoPlayerDataSourceList.length,
         "Index must be greater than 0 and less than size of data source "
         "list - 1");
     if (index <= _dataSourceLength) {
       _currentDataSourceIndex = index;
-      _betterPlayerController!
-          .setupDataSource(_betterPlayerDataSourceList[index]);
+      _yoyoPlayerController!.setupDataSource(_yoyoPlayerDataSourceList[index]);
     }
   }
 
   ///Get index of next data source. If current index is less than
-  ///[_betterPlayerDataSourceList] size then next element will be picked, otherwise
-  ///if loops is enabled then first element of [_betterPlayerDataSourceList] will
+  ///[_yoyoPlayerDataSourceList] size then next element will be picked, otherwise
+  ///if loops is enabled then first element of [_yoyoPlayerDataSourceList] will
   ///be picked, otherwise -1 will be returned, indicating that player should
   ///stop changing videos.
   int _getNextDataSourceIndex() {
@@ -125,14 +124,14 @@ class YoYoPlayerPlaylistController {
     }
   }
 
-  ///Get index of currently played source, based on [_betterPlayerDataSourceList]
+  ///Get index of currently played source, based on [_yoyoPlayerDataSourceList]
   int get currentDataSourceIndex => _currentDataSourceIndex;
 
-  ///Get size of [_betterPlayerDataSourceList]
-  int get _dataSourceLength => _betterPlayerDataSourceList.length;
+  ///Get size of [_yoyoPlayerDataSourceList]
+  int get _dataSourceLength => _yoyoPlayerDataSourceList.length;
 
   ///Get BetterPlayerController instance
-  YoYoPlayerController? get yoyoPlayerController => _betterPlayerController;
+  YoYoPlayerController? get yoyoPlayerController => _yoyoPlayerController;
 
   ///Cleanup BetterPlayerPlaylistController
   void dispose() {
