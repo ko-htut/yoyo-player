@@ -1,6 +1,6 @@
 import 'package:video_player/video_player.dart';
 
-void fastForward({VideoPlayerController controller}) {
+void fastForward({required VideoPlayerController controller}) {
   if (controller.value.duration.inSeconds -
           controller.value.position.inSeconds >
       10) {

@@ -3,13 +3,13 @@ import 'package:video_player/video_player.dart';
 import 'package:yoyo_player/src/responses/play_response.dart';
 
 Widget bottomBar(
-    {VideoPlayerController controller,
-    String videoSeek,
-    String videoDuration,
-    Widget backwardIcon,
-    Widget forwardIcon,
-    bool showMenu,
-    Function play}) {
+    {VideoPlayerController? controller,
+    String? videoSeek,
+    String? videoDuration,
+    Widget? backwardIcon,
+    Widget? forwardIcon,
+    required bool showMenu,
+    Function? play}) {
   return showMenu
       ? Align(
           alignment: Alignment.bottomCenter,
@@ -22,7 +22,7 @@ Widget bottomBar(
                   Column(
                     children: [
                       VideoProgressIndicator(
-                        controller,
+                        controller!,
                         allowScrubbing: true,
                         colors: VideoProgressColors(
                             playedColor: Color.fromARGB(250, 0, 255, 112)),
@@ -34,13 +34,13 @@ Widget bottomBar(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              videoSeek,
+                              videoSeek!,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
                             Text(
-                              videoDuration,
+                              videoDuration!,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
@@ -64,7 +64,7 @@ Widget bottomBar(
                               },
                               child: backwardIcon),
                           InkWell(
-                            onTap: play,
+                            onTap: play as void Function()?,
                             child: Icon(
                               controller.value.isPlaying
                                   ? Icons.pause_circle_outline

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Widget topChip(Widget data, Function fun) {
   return InkWell(
-    onTap: fun,
+    onTap: fun as void Function()?,
     child: Container(
       decoration: BoxDecoration(
           color: Colors.grey, borderRadius: BorderRadius.circular(5)),

@@ -1,4 +1,4 @@
 class AUDIO {
-  final String url;
+  final String? url;
   AUDIO({this.url});
 }
