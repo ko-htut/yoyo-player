@@ -161,32 +161,30 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     var widgetsBinding = WidgetsBinding.instance;
 
     widgetsBinding.addPostFrameCallback((callback) {
-      widgetsBinding.addPersistentFrameCallback((callback) {
-        if (context == null) return;
-        var orientation = MediaQuery.of(context).orientation;
-        bool? _fullscreen;
-        if (orientation == Orientation.landscape) {
-          //Horizontal screen
-          _fullscreen = true;
-          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-              overlays: []);
-        } else if (orientation == Orientation.portrait) {
-          _fullscreen = false;
-          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-              overlays: SystemUiOverlay.values);
-        }
-        if (_fullscreen != fullScreen) {
-          setState(() {
-            fullScreen = !fullScreen;
-            _navigateLocally(context);
-            if (widget.onFullScreen != null) {
-              widget.onFullScreen!(fullScreen);
-            }
-          });
-        }
-        //
-        widgetsBinding.scheduleFrame();
-      });
+      // widgetsBinding.addPersistentFrameCallback((callback) {
+      var orientation = MediaQuery.of(context).orientation;
+      bool? _fullscreen;
+      if (orientation == Orientation.landscape) {
+        //Horizontal screen
+        _fullscreen = true;
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+      } else if (orientation == Orientation.portrait) {
+        _fullscreen = false;
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+            overlays: SystemUiOverlay.values);
+      }
+      if (_fullscreen != fullScreen) {
+        setState(() {
+          fullScreen = !fullScreen;
+          _navigateLocally(context);
+          if (widget.onFullScreen != null) {
+            widget.onFullScreen!(fullScreen);
+          }
+        });
+      }
+      //
+      widgetsBinding.scheduleFrame();
+      // });
     });
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -736,7 +734,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     } catch (e) {
       print("Audio list clean error $e");
     }
-    audioList.clear();
+    // audioList.clear();
     try {
       print("m3u8 data list clean");
       yoyo.clear();
