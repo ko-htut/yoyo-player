@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:orientation/orientation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -111,14 +112,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   //m3u8 data video list for user choice
   List<M3U8pass> yoyo = [];
-  List<double> playBackspeed = [
-    1.0,
-    1.2,
-    1.4,
-    1.6,
-    1.8,
-    2.0,
-  ];
+  List<double> playBackspeed = [1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 3.0, 3.5];
   // m3u8 audio list
   List<AUDIO> audioList = [];
   // m3u8 temp data
@@ -143,10 +137,13 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   Timer? showTime;
   //Current ScreenSize
   Size get screenSize => MediaQuery.of(context).size;
+  FlutterSecureStorage? storage;
+  int? currentPosition;
   //
   @override
   void initState() {
     // getSub();
+
     urlCheck(widget.url);
     super.initState();
 
@@ -159,7 +156,15 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         .animate(controlBarAnimationController);
     var widgetsBinding = WidgetsBinding.instance;
 
-    widgetsBinding.addPostFrameCallback((callback) {
+    widgetsBinding.addPostFrameCallback((callback) async {
+      storage = FlutterSecureStorage();
+      final z = await storage?.read(
+        key: widget.url,
+      );
+
+      currentPosition = int.tryParse(z!);
+      print(
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ${currentPosition.toString()}");
       // widgetsBinding.addPersistentFrameCallback((callback) {
       var orientation = MediaQuery.of(context).orientation;
       bool? _fullscreen;
@@ -197,6 +202,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   void dispose() {
     m3u8clean();
     controller!.dispose();
+    storage?.write(
+        key: widget.url,
+        value: controller!.value.position.inSeconds.toString());
     super.dispose();
   }
 
@@ -441,12 +449,16 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
 // M3U8 Data Setup
   void getM3U8(String video) {
-    if (yoyo.length > 0) {
-      print("${yoyo.length} : data start clean");
-      m3u8clean();
+    try {
+      if (yoyo.length > 0) {
+        print("${yoyo.length} : data start clean");
+        m3u8clean();
+      }
+      print("---- m3u8 fitch start ----\n$video\n--- please wait –––");
+      m3u8video(video);
+    } catch (e) {
+      print(e);
     }
-    print("---- m3u8 fitch start ----\n$video\n--- please wait –––");
-    m3u8video(video);
   }
 
   Future<M3U8s> m3u8video(String video) async {
@@ -554,12 +566,12 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       if (!await Wakelock.enabled) {
         await Wakelock.enable();
       }
+
       setState(() {
         videoDuration = convertDurationToString(controller!.value.duration);
         videoSeek = convertDurationToString(controller!.value.position);
         videoSeekSecond = controller!.value.position.inSeconds.toDouble();
         videoDurationSecond = controller!.value.duration.inSeconds.toDouble();
-        playbackSpeed = controller!.value.playbackSpeed;
       });
     } else {
       if (await Wakelock.enabled) {
@@ -592,7 +604,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   void toggleControls() {
     clearHideControlBarTimer();
 
-    if (!showMenu) {
+    if (!showMenu && controller != null) {
       showMenu = true;
       createHideControlBarTimer();
     } else {
@@ -629,26 +641,50 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         controller = controller = VideoPlayerController.networkUrl(
             Uri.parse(url!),
             formatHint: VideoFormat.other)
-          ..initialize();
+          ..initialize().then((_) {
+            if (currentPosition != null) {
+              controller!.seekTo(
+                  Duration(seconds: int.tryParse(currentPosition.toString())!));
+            }
+          });
       } else if (playType == "MKV") {
         controller = controller = VideoPlayerController.networkUrl(
             Uri.parse(url!),
             formatHint: VideoFormat.dash)
-          ..initialize();
+          ..initialize().then((_) {
+            if (currentPosition != null) {
+              controller!.seekTo(
+                  Duration(seconds: int.tryParse(currentPosition.toString())!));
+            }
+          });
       } else if (playType == "HLS") {
         controller = VideoPlayerController.networkUrl(Uri.parse(url!),
             formatHint: VideoFormat.hls)
-          ..initialize()
-              .then((_) => setState(() => hasInitError = false))
-              .catchError((e) => setState(() => hasInitError = true));
+          ..initialize().then((_) {
+            if (currentPosition != null) {
+              controller!.seekTo(
+                  Duration(seconds: int.tryParse(currentPosition.toString())!));
+            }
+            setState(() => hasInitError = false);
+          }).catchError((e) {
+            print(e);
+            setState(() => hasInitError = true);
+          });
       }
     } else {
       print(
           "--- Player Status ---\nplay url : $url\noffline : $offline\n--- start playing –––");
       controller = VideoPlayerController.file(File(url!))
-        ..initialize()
-            .then((value) => setState(() => hasInitError = false))
-            .catchError((e) => setState(() => hasInitError = true));
+        ..initialize().then((_) {
+          if (currentPosition != null) {
+            controller!.seekTo(
+                Duration(seconds: int.tryParse(currentPosition.toString())!));
+            setState(() => hasInitError = false);
+          }
+        }).catchError((e) {
+          print(e);
+          setState(() => hasInitError = true);
+        });
     }
   }
 
@@ -690,6 +726,10 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         print("read file success");
         text = await file.readAsString();
         print("data : $text  :: data");
+        storage?.write(
+            key: widget.url,
+            value: controller!.value.position.inSeconds.toString());
+
         localM3U8play(file);
         // videoControlSetup(file);
       } catch (e) {
@@ -708,9 +748,22 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   void localM3U8play(File file) {
     controller = VideoPlayerController.file(
       file,
-    )..initialize()
-        .then((_) => setState(() => hasInitError = false))
-        .catchError((e) => setState(() => hasInitError = true));
+    )..initialize().then((_) async {
+        setState(() => hasInitError = false);
+        final z = await storage?.read(
+          key: widget.url,
+        );
+
+        currentPosition = int.tryParse(z!);
+
+        if (currentPosition != null) {
+          controller!.seekTo(
+              Duration(seconds: int.tryParse(currentPosition.toString())!));
+        }
+      }).catchError((e) {
+        print(e);
+        setState(() => hasInitError = true);
+      });
     controller!.addListener(listener);
     controller!.play();
   }

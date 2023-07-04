@@ -18,6 +18,7 @@ dependencies:
   video_player:
   video_player_web_hls:
   wakelock:
+  flutter_secure_storage:
 
 dev_dependencies:
   flutter_test:
