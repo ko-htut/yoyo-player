@@ -26,7 +26,8 @@ Widget bottomBar(
                         allowScrubbing: true,
                         colors: VideoProgressColors(
                             playedColor: Color.fromARGB(250, 0, 255, 112)),
-                        padding: EdgeInsets.only(left: 5.0, right: 5),
+                        padding:
+                            EdgeInsets.only(left: 5.0, right: 5, bottom: 5),
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 5.0, right: 5.0),
@@ -53,7 +54,7 @@ Widget bottomBar(
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: EdgeInsets.all(5.0),
+                      padding: EdgeInsets.all(2.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
@@ -63,14 +64,17 @@ Widget bottomBar(
                                 rewind(controller);
                               },
                               child: backwardIcon),
-                          InkWell(
-                            onTap: play as void Function()?,
-                            child: Icon(
-                              controller.value.isPlaying
-                                  ? Icons.pause_circle_outline
-                                  : Icons.play_circle_outline,
-                              color: Colors.white,
-                              size: 35,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: InkWell(
+                              onTap: play as void Function()?,
+                              child: Icon(
+                                controller.value.isPlaying
+                                    ? Icons.pause_circle_outline
+                                    : Icons.play_circle_outline,
+                                color: Colors.white,
+                                size: 40,
+                              ),
                             ),
                           ),
                           InkWell(
