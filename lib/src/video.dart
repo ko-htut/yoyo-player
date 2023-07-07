@@ -277,18 +277,16 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                       });
                     },
                   ),
-                  Container(
-                    width: 5,
-                  ),
                   InkWell(
                     onTap: () => toggleFullScreen(),
                     child: Icon(
                       Icons.fullscreen,
                       color: Colors.white,
+                      size: 35,
                     ),
                   ),
                   Container(
-                    width: 5,
+                    width: 3,
                   ),
                 ],
               ),
@@ -590,6 +588,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
             showMenu = false;
             m3u8show = false;
             m3u8showspeed = false;
+
             controlBarAnimationController.reverse();
           });
         }
@@ -738,12 +737,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       print("data : ${data.dataQuality}");
     }
   }
-
-  // void onSelectspeed(double speed) async {
-  //   controller!.value.isPlaying ? controller!.pause() : controller!.pause();
-
-  //   videoControlSetup(data.dataURL);
-  // }
 
   void localM3U8play(File file) {
     controller = VideoPlayerController.file(

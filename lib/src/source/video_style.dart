@@ -7,12 +7,16 @@ class VideoStyle {
     this.pause = const Icon(Icons.pause),
     this.fullscreen = const Icon(Icons.fullscreen),
     this.forward = const Icon(
-      Icons.fast_forward_rounded,
+      Icons.forward_10,
       color: Colors.white,
     ),
-    this.backward = const Icon(
-      Icons.fast_rewind_rounded,
-      color: Colors.white,
+    this.backward = const RotatedBox(
+      quarterTurns: 90,
+      child: Icon(
+        Icons.forward_10,
+        color: Colors.white,
+        textDirection: TextDirection.ltr,
+      ),
     ),
     this.playedColor = Colors.green,
     this.qualitystyle = const TextStyle(

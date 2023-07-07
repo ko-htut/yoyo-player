@@ -14,7 +14,7 @@ Widget bottomBar(
       ? Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            height: 40,
+            height: 50,
             child: Padding(
               padding: EdgeInsets.all(0.0),
               child: Stack(
