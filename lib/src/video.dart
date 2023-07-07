@@ -205,6 +205,12 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     storage?.write(
         key: widget.url,
         value: controller!.value.position.inSeconds.toString());
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     super.dispose();
   }
 
@@ -265,6 +271,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                       print("speeed");
                       setState(() {
                         m3u8showspeed = !m3u8showspeed;
+                        m3u8show = false;
                       });
                     },
                   ),
@@ -274,6 +281,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                       // quality function
                       setState(() {
                         m3u8show = !m3u8show;
+                        m3u8showspeed = false;
                       });
                     },
                   ),
@@ -789,7 +797,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   }
 
   void toggleFullScreen() {
-    if (fullScreen) {
+    // if (fullScreen) {
+    if (MediaQuery.of(context).orientation == Orientation.landscape) {
       print("full up");
       OrientationPlugin.forceOrientation(DeviceOrientation.portraitUp);
     } else {
