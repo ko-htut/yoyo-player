@@ -161,8 +161,10 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       final z = await storage?.read(
         key: widget.url,
       );
+      if (z != null) {
+        currentPosition = int.tryParse(z);
+      }
 
-      currentPosition = int.tryParse(z!);
       print(
           "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ${currentPosition.toString()}");
       // widgetsBinding.addPersistentFrameCallback((callback) {
@@ -240,8 +242,14 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     ];
     videoChildren.addAll(videoBuiltInChildren());
     return AspectRatio(
-      aspectRatio: fullScreen
-          ? calculateAspectRatio(context, screenSize)
+      aspectRatio: MediaQuery.of(context).orientation == Orientation.landscape
+          ?
+          // MediaQuery.of(context).size.width /
+          //     MediaQuery.of(context).size.height
+          // :
+
+          calculateAspectRatio(context, screenSize)
+          //     :
           : widget.aspectRatio,
       child: controller!.value.isInitialized
           ? Stack(children: videoChildren)
@@ -252,51 +260,54 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   /// Video Player ActionBar
   Widget actionBar() {
     return showMenu
-        ? Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              height: 40,
-              width: double.infinity,
-              // color: Colors.yellow,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    width: 5,
-                  ),
-                  topChip(
-                    Text(playbackSpeed.toString() + " x",
-                        style: widget.videoStyle!.qualitystyle),
-                    () {
-                      print("speeed");
-                      setState(() {
-                        m3u8showspeed = !m3u8showspeed;
-                        m3u8show = false;
-                      });
-                    },
-                  ),
-                  topChip(
-                    Text(m3u8quality!, style: widget.videoStyle!.qualitystyle),
-                    () {
-                      // quality function
-                      setState(() {
-                        m3u8show = !m3u8show;
-                        m3u8showspeed = false;
-                      });
-                    },
-                  ),
-                  InkWell(
-                    onTap: () => toggleFullScreen(),
-                    child: Icon(
-                      Icons.fullscreen,
-                      color: Colors.white,
-                      size: 35,
+        ? SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                height: 40,
+                width: double.infinity,
+                // color: Colors.yellow,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 5,
                     ),
-                  ),
-                  Container(
-                    width: 3,
-                  ),
-                ],
+                    topChip(
+                      Text(playbackSpeed.toString() + " x",
+                          style: widget.videoStyle!.qualitystyle),
+                      () {
+                        print("speeed");
+                        setState(() {
+                          m3u8showspeed = !m3u8showspeed;
+                          m3u8show = false;
+                        });
+                      },
+                    ),
+                    topChip(
+                      Text(m3u8quality!,
+                          style: widget.videoStyle!.qualitystyle),
+                      () {
+                        // quality function
+                        setState(() {
+                          m3u8show = !m3u8show;
+                          m3u8showspeed = false;
+                        });
+                      },
+                    ),
+                    InkWell(
+                      onTap: () => toggleFullScreen(),
+                      child: Icon(
+                        Icons.fullscreen,
+                        color: Colors.white,
+                        size: 35,
+                      ),
+                    ),
+                    Container(
+                      width: 3,
+                    ),
+                  ],
+                ),
               ),
             ),
           )
