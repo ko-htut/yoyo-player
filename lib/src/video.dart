@@ -790,8 +790,10 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   void toggleFullScreen() {
     if (fullScreen) {
+      print("full up");
       OrientationPlugin.forceOrientation(DeviceOrientation.portraitUp);
     } else {
+      print("full land right");
       OrientationPlugin.forceOrientation(DeviceOrientation.landscapeRight);
     }
   }
