@@ -112,7 +112,19 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   //m3u8 data video list for user choice
   List<M3U8pass> yoyo = [];
-  List<double> playBackspeed = [1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 3.0, 3.5];
+  List<double> playBackspeed = [
+    1.0,
+    1.2,
+    1.4,
+    1.6,
+    1.8,
+    2.0,
+    2.25,
+    2.5,
+    2.75,
+    3.0,
+    3.5
+  ];
   // m3u8 audio list
   List<AUDIO> audioList = [];
   // m3u8 temp data
@@ -304,7 +316,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                       ),
                     ),
                     Container(
-                      width: 3,
+                      width: 17,
                     ),
                   ],
                 ),
