@@ -9,13 +9,15 @@ class VideoStyle {
     this.forward = const Icon(
       Icons.forward_10,
       color: Colors.white,
+      size: 40,
     ),
     this.backward = const RotatedBox(
-      quarterTurns: 90,
+      quarterTurns: -180,
       child: Icon(
         Icons.forward_10,
         color: Colors.white,
-        textDirection: TextDirection.ltr,
+        // textDirection: TextDirection.ltr,
+        size: 40,
       ),
     ),
     this.playedColor = Colors.green,

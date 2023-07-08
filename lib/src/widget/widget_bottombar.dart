@@ -14,7 +14,11 @@ Widget bottomBar(
       ? Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            height: 60,
+            decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(.5),
+                borderRadius: BorderRadius.circular(10)),
+            padding: EdgeInsets.symmetric(vertical: 10),
+            height: 90,
             child: Padding(
               padding: EdgeInsets.all(0.0),
               child: Stack(
@@ -38,13 +42,15 @@ Widget bottomBar(
                               videoSeek!,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white),
+                                  color: Colors.white,
+                                  fontSize: 17),
                             ),
                             Text(
                               videoDuration!,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white),
+                                  color: Colors.white,
+                                  fontSize: 17),
                             ),
                           ],
                         ),
@@ -54,7 +60,9 @@ Widget bottomBar(
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: EdgeInsets.all(3.0),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 2,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
@@ -73,7 +81,7 @@ Widget bottomBar(
                                     ? Icons.pause_circle_outline
                                     : Icons.play_circle_outline,
                                 color: Colors.white,
-                                size: 40,
+                                size: 55,
                               ),
                             ),
                           ),
