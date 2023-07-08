@@ -54,7 +54,7 @@ Widget bottomBar(
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: EdgeInsets.all(0.0),
+                      padding: EdgeInsets.all(3.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,

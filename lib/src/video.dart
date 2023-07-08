@@ -707,7 +707,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   }
 
   String convertDurationToString(Duration duration) {
-    var minutes = duration.inMinutes.toString();
+    var minutes = (duration.inMinutes % 60).toString();
     if (minutes.length == 1) {
       minutes = '0' + minutes;
     }
@@ -715,7 +715,11 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     if (seconds.length == 1) {
       seconds = '0' + seconds;
     }
-    return "$minutes:$seconds";
+    var hour = (duration.inHours).toString();
+    if (hour.length == 1) {
+      hour = '0' + hour;
+    }
+    return "$hour:$minutes:$seconds";
   }
 
   void _navigateLocally(context) async {
