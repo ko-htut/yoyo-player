@@ -17,6 +17,7 @@ dependencies:
   flutter_screen_wake:
   video_player:
   video_player_web_hls:
+  font_awesome_flutter:
   wakelock:
   flutter_secure_storage:
 

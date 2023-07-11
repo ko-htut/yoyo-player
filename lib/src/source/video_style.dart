@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Video Player Icon style
 class VideoStyle {
-  VideoStyle({
+  VideoStyle(
+    this.backward, {
     this.play = const Icon(Icons.play_arrow),
     this.pause = const Icon(Icons.pause),
     this.fullscreen = const Icon(Icons.fullscreen),
@@ -10,15 +11,6 @@ class VideoStyle {
       Icons.forward_10,
       color: Colors.white,
       size: 40,
-    ),
-    this.backward = const RotatedBox(
-      quarterTurns: -180,
-      child: Icon(
-        Icons.forward_10,
-        color: Colors.white,
-        // textDirection: TextDirection.ltr,
-        size: 40,
-      ),
     ),
     this.playedColor = Colors.green,
     this.qualitystyle = const TextStyle(

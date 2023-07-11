@@ -309,10 +309,18 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                     ),
                     InkWell(
                       onTap: () => toggleFullScreen(),
-                      child: Icon(
-                        Icons.fullscreen,
-                        color: Colors.white,
-                        size: 35,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 2),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 3, vertical: 0),
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Icon(
+                          Icons.fullscreen,
+                          color: Colors.white,
+                          size: 33,
+                        ),
                       ),
                     ),
                     Container(
