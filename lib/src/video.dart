@@ -764,7 +764,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
             key: widget.url,
             value: controller!.value.position.inSeconds.toString());
 
-        localM3U8play(file);
+        localM3U8play(data.dataURL!);
         // videoControlSetup(file);
       } catch (e) {
         print("Couldn't read file ${data.dataQuality} e: $e");
@@ -773,25 +773,22 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     }
   }
 
-  void localM3U8play(File file) {
-    controller = VideoPlayerController.file(
-      file,
+  void localM3U8play(String url) async {
+    controller!.dispose();
+    final lastPlayedPos = await controller!.position;
+    controller = VideoPlayerController.networkUrl(
+      Uri.parse(url),
     )..initialize().then((_) async {
         setState(() => hasInitError = false);
-        final z = await storage?.read(
-          key: widget.url,
-        );
-
-        currentPosition = int.tryParse(z!);
-
-        if (currentPosition != null) {
-          controller!.seekTo(
-              Duration(seconds: int.tryParse(currentPosition.toString())!));
+        if (lastPlayedPos != null) {
+          controller!.seekTo(lastPlayedPos);
         }
+        // controller!.play();
       }).catchError((e) {
-        print(e);
         setState(() => hasInitError = true);
+        print('Init local file error $e');
       });
+
     controller!.addListener(listener);
     controller!.play();
   }
