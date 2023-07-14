@@ -112,7 +112,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   //m3u8 data video list for user choice
   List<M3U8pass> yoyo = [];
-  List<double> playBackspeed = [
+  List<double> androidplayBackspeed = [
     1.0,
     1.2,
     1.4,
@@ -125,6 +125,28 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     3.0,
     3.5
   ];
+  List<double> iosplayBackspeed = [
+    1.0,
+    1.2,
+    1.4,
+    1.6,
+    1.8,
+    2.0,
+    2.25,
+    2.5,
+    2.75,
+    3.0,
+    3.5
+  ];
+
+  List<double> getplaybacspeedaccordingtoPlateform() {
+    if (Platform.isAndroid) {
+      return androidplayBackspeed;
+    } else {
+      return iosplayBackspeed;
+    }
+  }
+
   // m3u8 audio list
   List<AUDIO> audioList = [];
   // m3u8 temp data
@@ -342,7 +364,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
               padding: const EdgeInsets.only(top: 40.0, right: 5),
               child: SingleChildScrollView(
                 child: Column(
-                  children: playBackspeed
+                  children: getplaybacspeedaccordingtoPlateform()
                       .map((e) => InkWell(
                             onTap: () {
                               setState(() {
@@ -595,6 +617,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     videoInit(url);
     controller!.addListener(listener);
     controller!.play();
+    controller!.setPlaybackSpeed(playbackSpeed!);
   }
 
 // video Listener
@@ -791,6 +814,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         if (lastPlayedPos != null) {
           controller!.seekTo(lastPlayedPos);
         }
+        controller!.setPlaybackSpeed(playbackSpeed!);
         // controller!.play();
       }).catchError((e) {
         setState(() => hasInitError = true);
@@ -799,6 +823,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
     controller!.addListener(listener);
     controller!.play();
+    controller!.setPlaybackSpeed(playbackSpeed!);
   }
 
   void m3u8clean() async {
