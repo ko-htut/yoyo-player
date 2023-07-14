@@ -615,7 +615,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     videoInit(url);
     controller!.addListener(listener);
     controller!.play();
-    controller!.setPlaybackSpeed(playbackSpeed!);
+    setState(() {
+      controller!.setPlaybackSpeed(playbackSpeed!);
+    });
   }
 
 // video Listener
@@ -812,7 +814,10 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         if (lastPlayedPos != null) {
           controller!.seekTo(lastPlayedPos);
         }
-        controller!.setPlaybackSpeed(playbackSpeed!);
+        setState(() {
+          controller!.setPlaybackSpeed(playbackSpeed!);
+        });
+
         // controller!.play();
       }).catchError((e) {
         setState(() => hasInitError = true);
@@ -821,7 +826,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
     controller!.addListener(listener);
     controller!.play();
-    controller!.setPlaybackSpeed(playbackSpeed!);
+    setState(() {
+      controller!.setPlaybackSpeed(playbackSpeed!);
+    });
   }
 
   void m3u8clean() async {
