@@ -128,15 +128,13 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   List<double> iosplayBackspeed = [
     1.0,
     1.2,
+    1.3,
     1.4,
+    1.5,
     1.6,
+    1.7,
     1.8,
     2.0,
-    2.25,
-    2.5,
-    2.75,
-    3.0,
-    3.5
   ];
 
   List<double> getplaybacspeedaccordingtoPlateform() {
@@ -643,7 +641,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   void createHideControlBarTimer() {
     clearHideControlBarTimer();
-    showTime = Timer(Duration(milliseconds: 5000), () {
+    showTime = Timer(Duration(milliseconds: 70000), () {
       if (controller != null && controller!.value.isPlaying) {
         if (showMenu) {
           setState(() {
