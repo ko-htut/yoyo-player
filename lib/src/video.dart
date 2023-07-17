@@ -448,6 +448,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
             forwardIcon: widget.videoStyle!.forward,
             backwardIcon: widget.videoStyle!.backward,
             showMenu: showMenu,
+            playbackSpeed: playbackSpeed,
             play: () => togglePlay())
         : Container();
   }
