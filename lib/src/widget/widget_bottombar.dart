@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_video_progress/smooth_video_progress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:yoyo_player/src/responses/play_response.dart';
 
@@ -12,6 +13,22 @@ Widget bottomBar(
     required bool showMenu,
     final playbackSpeed,
     Function? play}) {
+  String convertDurationToString(Duration duration) {
+    var minutes = (duration.inMinutes % 60).toString();
+    if (minutes.length == 1) {
+      minutes = '0' + minutes;
+    }
+    var seconds = (duration.inSeconds % 60).toString();
+    if (seconds.length == 1) {
+      seconds = '0' + seconds;
+    }
+    var hour = (duration.inHours).toString();
+    if (hour.length == 1) {
+      hour = '0' + hour;
+    }
+    return "$hour:$minutes:$seconds";
+  }
+
   return showMenu
       ? Align(
           alignment: Alignment.bottomCenter,
@@ -19,30 +36,40 @@ Widget bottomBar(
             decoration: BoxDecoration(
                 color: Colors.grey.withOpacity(.5),
                 borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.symmetric(vertical: 10),
-            height: 90,
+            // padding: EdgeInsets.symmetric(vertical: 10),
+            height: 100,
             child: Padding(
               padding: EdgeInsets.all(0.0),
               child: Stack(
                 children: [
                   Column(
                     children: [
-                      if (controller!.value.isPlaying)
-                        // CupertinoSlider(
-                        //   value: 0.0,
-                        //   min: double.tryParse(
-                        //       controller.value.duration.toString())!,
-                        //   onChanged: (value) {},
-                        // ),
-                        VideoProgressIndicator(
-                          controller,
-                          allowScrubbing: true,
-                          colors: VideoProgressColors(
-                              playedColor: Colors
-                                  .blue), //Color.fromARGB(250, 0, 255, 112)),
-                          padding:
-                              EdgeInsets.only(left: 5.0, right: 5, bottom: 5),
+                      // if (controller!.value.isPlaying)
+                      SmoothVideoProgress(
+                        controller: controller!,
+                        builder: (context, position, duration, child) => Slider(
+                          onChangeStart: (_) => controller.pause(),
+                          onChangeEnd: (_) => controller.play(),
+                          onChanged: (value) => controller
+                              .seekTo(Duration(milliseconds: value.toInt())),
+                          value: position.inMilliseconds.toDouble(),
+                          divisions: duration.inSeconds,
+                          // min: cu,
+                          label: convertDurationToString(
+                              controller.value.position),
+
+                          max: duration.inMilliseconds.toDouble(),
                         ),
+                      ),
+                      // VideoProgressIndicator(
+                      //   controller,
+                      //   allowScrubbing: true,
+                      //   colors: VideoProgressColors(
+                      //       playedColor: Colors
+                      //           .blue), //Color.fromARGB(250, 0, 255, 112)),
+                      //   padding:
+                      //       EdgeInsets.only(left: 5.0, right: 5, bottom: 5),
+                      // ),
                       Padding(
                         padding: EdgeInsets.only(left: 5.0, right: 5.0),
                         child: Row(

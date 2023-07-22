@@ -190,11 +190,15 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
     widgetsBinding.addPostFrameCallback((callback) async {
       storage = FlutterSecureStorage();
-      final z = await storage?.read(
-        key: widget.url,
-      );
-      if (z != null) {
-        currentPosition = int.tryParse(z);
+      try {
+        final z = await storage?.read(
+          key: widget.url,
+        );
+        if (z != null) {
+          currentPosition = int.tryParse(z);
+        }
+      } catch (e) {
+        print(e);
       }
 
       print(
@@ -618,6 +622,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     controller!.play();
     setState(() {
       controller!.setPlaybackSpeed(playbackSpeed!);
+      // controller!
+      //     .seekTo(Duration(seconds: int.tryParse(currentPosition.toString())!));
     });
   }
 

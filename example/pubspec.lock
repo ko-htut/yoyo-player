@@ -69,6 +69,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_hooks:
+    dependency: transitive
+    description:
+      name: flutter_hooks
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.18.6"
   flutter_screen_wake:
     dependency: transitive
     description:
@@ -259,6 +266,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_video_progress:
+    dependency: transitive
+    description:
+      name: smooth_video_progress
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4"
   source_span:
     dependency: transitive
     description:
