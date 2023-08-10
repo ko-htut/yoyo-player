@@ -121,9 +121,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     2.0,
     2.25,
     2.5,
-    2.75,
-    3.0,
-    3.5
   ];
   List<double> iosplayBackspeed = [
     1.0,
@@ -137,7 +134,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     2.0,
   ];
 
-  List<double> getplaybacspeedaccordingtoPlateform() {
+  List<double> getplaybackspeedaccordingtoPlateform() {
     if (Platform.isAndroid) {
       return androidplayBackspeed;
     } else {
@@ -366,7 +363,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
               padding: const EdgeInsets.only(top: 40.0, right: 5),
               child: SingleChildScrollView(
                 child: Column(
-                  children: getplaybacspeedaccordingtoPlateform()
+                  children: getplaybackspeedaccordingtoPlateform()
                       .map((e) => InkWell(
                             onTap: () {
                               setState(() {
