@@ -20,7 +20,7 @@ dependencies:
   font_awesome_flutter:
   wakelock:
   flutter_secure_storage:
-  smooth_video_progress: 
+  smooth_video_progress:
 
 dev_dependencies:
   flutter_test:
