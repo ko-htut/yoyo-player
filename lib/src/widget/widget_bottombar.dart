@@ -2,17 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_video_progress/smooth_video_progress.dart';
 import 'package:video_player/video_player.dart';
-import 'package:yoyo_player/src/responses/play_response.dart';
 
-Widget bottomBar(
-    {VideoPlayerController? controller,
-    String? videoSeek,
-    String? videoDuration,
-    Widget? backwardIcon,
-    Widget? forwardIcon,
-    required bool showMenu,
-    final playbackSpeed,
-    Function? play}) {
+Widget bottomBar({
+  VideoPlayerController? controller,
+  String? videoSeek,
+  String? videoDuration,
+  Widget? backwardIcon,
+  Widget? forwardIcon,
+  required bool showMenu,
+  final playbackSpeed,
+  Function? play,
+  Function? forwrad,
+  Function? rewind,
+}) {
   String convertDurationToString(Duration duration) {
     var minutes = (duration.inMinutes % 60).toString();
     if (minutes.length == 1) {
@@ -105,10 +107,7 @@ Widget bottomBar(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           InkWell(
-                              onTap: () {
-                                rewind(controller);
-                                controller.setPlaybackSpeed(playbackSpeed);
-                              },
+                              onTap: rewind as void Function()?,
                               child: backwardIcon),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -124,10 +123,7 @@ Widget bottomBar(
                             ),
                           ),
                           InkWell(
-                              onTap: () {
-                                fastForward(controller: controller);
-                                controller.setPlaybackSpeed(playbackSpeed);
-                              },
+                              onTap: forwrad as void Function()?,
                               child: forwardIcon),
                         ],
                       ),

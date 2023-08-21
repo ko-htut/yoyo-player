@@ -7,7 +7,6 @@ void fastForward({required VideoPlayerController controller}) {
     controller
         .seekTo(Duration(seconds: controller.value.position.inSeconds + 10));
   }
-  if (!controller.value.isPlaying) {}
 }
 
 void rewind(VideoPlayerController controller) {

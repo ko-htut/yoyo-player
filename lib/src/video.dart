@@ -11,6 +11,7 @@ import 'package:orientation/orientation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:yoyo_player/src/responses/play_response.dart';
 import 'package:yoyo_player/src/utils/utils.dart';
 import 'package:yoyo_player/src/widget/widget_bottombar.dart';
 import 'package:yoyo_player/yoyo_player.dart';
@@ -450,6 +451,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
             backwardIcon: widget.videoStyle!.backward,
             showMenu: showMenu,
             playbackSpeed: playbackSpeed,
+            forwrad: () => forward(),
+            rewind: () => rewindBack(),
             play: () => togglePlay())
         : Container();
   }
@@ -684,6 +687,22 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         controlBarAnimationController.reverse();
       }
     });
+  }
+
+  void forward() {
+    fastForward(controller: controller!);
+    if (Platform.isIOS) {
+      controller!.setPlaybackSpeed(playbackSpeed!).then(
+          (value) => controller!.pause().then((value) => controller!.play()));
+    }
+  }
+
+  void rewindBack() {
+    rewind(controller!);
+    if (Platform.isIOS) {
+      controller!.setPlaybackSpeed(playbackSpeed!).then(
+          (value) => controller!.pause().then((value) => controller!.play()));
+    }
   }
 
   void togglePlay() {
