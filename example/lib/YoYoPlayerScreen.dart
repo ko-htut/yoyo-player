@@ -31,8 +31,8 @@ class _YoYoPlayerScreenState extends State<YoYoPlayerScreen> {
             child: Center(
               child: YoYoPlayer(
                 aspectRatio: 16 / 9,
-                url:
-                    "https://vz-fd93b4ad-1aa.b-cdn.net/64a045f8-8935-4369-b83f-06f043ddf6b1/playlist.m3u8",
+                url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+                // "https://vz-fd93b4ad-1aa.b-cdn.net/64a045f8-8935-4369-b83f-06f043ddf6b1/playlist.m3u8",
                 // "https://vz-7b6a17bc-fc1.b-cdn.net/43babd4b-eaed-4a93-baa9-2c2ebf091fb6/playlist.m3u8?v=1689179659",
                 // "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
                 // "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
