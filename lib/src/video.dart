@@ -301,54 +301,57 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                 height: 40,
                 width: double.infinity,
                 // color: Colors.yellow,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: 5,
-                    ),
-                    topChip(
-                      Text(playbackSpeed.toString() + " x",
-                          style: widget.videoStyle!.qualitystyle),
-                      () {
-                        print("speeed");
-                        setState(() {
-                          m3u8showspeed = !m3u8showspeed;
-                          m3u8show = false;
-                        });
-                      },
-                    ),
-                    topChip(
-                      Text(m3u8quality!,
-                          style: widget.videoStyle!.qualitystyle),
-                      () {
-                        // quality function
-                        setState(() {
-                          m3u8show = !m3u8show;
-                          m3u8showspeed = false;
-                        });
-                      },
-                    ),
-                    InkWell(
-                      onTap: () => toggleFullScreen(),
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 2),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 3, vertical: 0),
-                        decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Icon(
-                          Icons.fullscreen,
-                          color: Colors.white,
-                          size: 33,
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        width: 5,
+                      ),
+                      topChip(
+                        Text(playbackSpeed.toString() + " x",
+                            style: widget.videoStyle!.qualitystyle),
+                        () {
+                          print("speeed");
+                          setState(() {
+                            m3u8showspeed = !m3u8showspeed;
+                            m3u8show = false;
+                          });
+                        },
+                      ),
+                      topChip(
+                        Text(m3u8quality!,
+                            style: widget.videoStyle!.qualitystyle),
+                        () {
+                          // quality function
+                          setState(() {
+                            m3u8show = !m3u8show;
+                            m3u8showspeed = false;
+                          });
+                        },
+                      ),
+                      InkWell(
+                        onTap: () => toggleFullScreen(),
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 2),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 3, vertical: 0),
+                          decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Icon(
+                            Icons.fullscreen,
+                            color: Colors.white,
+                            size: 33,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      width: 17,
-                    ),
-                  ],
+                      Container(
+                        width: 17,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
