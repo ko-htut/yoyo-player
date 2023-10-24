@@ -302,9 +302,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
                 width: double.infinity,
                 // color: Colors.yellow,
                 child: Directionality(
-                  textDirection: TextDirection.ltr,
+                  textDirection: TextDirection.rtl,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    // mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Container(
                         width: 5,
