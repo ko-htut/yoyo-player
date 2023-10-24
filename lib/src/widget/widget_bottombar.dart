@@ -47,23 +47,26 @@ Widget bottomBar({
                   Column(
                     children: [
                       // if (controller!.value.isPlaying)
-                      SmoothVideoProgress(
-                        controller: controller!,
-                        builder: (context, position, duration, child) =>
-                            Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: Slider(
-                            onChangeStart: (_) => controller.pause(),
-                            onChangeEnd: (_) => controller.play(),
-                            onChanged: (value) => controller
-                                .seekTo(Duration(milliseconds: value.toInt())),
-                            value: position.inMilliseconds.toDouble(),
-                            divisions: duration.inSeconds,
-                            // min: cu,
-                            label: convertDurationToString(
-                                controller.value.position),
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: SmoothVideoProgress(
+                          controller: controller!,
+                          builder: (context, position, duration, child) =>
+                              Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: Slider(
+                              onChangeStart: (_) => controller.pause(),
+                              onChangeEnd: (_) => controller.play(),
+                              onChanged: (value) => controller.seekTo(
+                                  Duration(milliseconds: value.toInt())),
+                              value: position.inMilliseconds.toDouble(),
+                              divisions: duration.inSeconds,
+                              // min: cu,
+                              label: convertDurationToString(
+                                  controller.value.position),
 
-                            max: duration.inMilliseconds.toDouble(),
+                              max: duration.inMilliseconds.toDouble(),
+                            ),
                           ),
                         ),
                       ),
@@ -82,14 +85,14 @@ Widget bottomBar({
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              videoSeek!,
+                              videoDuration!,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                   fontSize: 17),
                             ),
                             Text(
-                              videoDuration!,
+                              videoSeek!,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
