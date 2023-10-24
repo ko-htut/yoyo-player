@@ -79,26 +79,29 @@ Widget bottomBar({
                       //   padding:
                       //       EdgeInsets.only(left: 5.0, right: 5, bottom: 5),
                       // ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 5.0, right: 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              videoDuration!,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 17),
-                            ),
-                            Text(
-                              videoSeek!,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 17),
-                            ),
-                          ],
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                videoSeek!,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 17),
+                              ),
+                              Text(
+                                videoDuration!,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 17),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
