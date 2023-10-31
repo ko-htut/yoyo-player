@@ -362,7 +362,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   Widget m3u8listspeed() {
     return m3u8showspeed == true
         ? Align(
-            alignment: Alignment.topLeft,
+            alignment: Alignment.topRight,
             child: Padding(
               padding: const EdgeInsets.only(top: 40.0, right: 5),
               child: SingleChildScrollView(
