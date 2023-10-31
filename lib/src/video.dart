@@ -400,7 +400,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   Widget m3u8list() {
     return m3u8show == true
         ? Align(
-            alignment: Alignment.topLeft,
+            alignment: Alignment.topRight,
             child: Padding(
               padding: const EdgeInsets.only(top: 40.0, right: 5),
               child: SingleChildScrollView(
