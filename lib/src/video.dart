@@ -650,7 +650,6 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   Future<void> updateVideoProgress() async {
     try {
-      print("Will update progress");
       final url = widget.domianUrl;
 
       if (watchedAnalaysis.isNotEmpty) {
@@ -658,7 +657,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
             body: json.encode({
               "contentViewId": widget.contentViewId.toString(),
               "watchedMinutes": watchedAnalaysis.toList(),
-              "contentId": widget.contentID,
+              "contentId": widget.contentID.toString(),
             }),
             headers: {
               "Accept": "application/json",
@@ -915,7 +914,45 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         debugPrint('Init local file error $e');
       });
 
-    controller!.addListener(listener);
+    controller!.addListener(() async {
+      if (controller!.value.isInitialized && controller!.value.isPlaying) {
+        if (!await Wakelock.enabled) {
+          await Wakelock.enable();
+        }
+
+        setState(() {
+          videoDuration = convertDurationToString(controller!.value.duration);
+          videoSeek = convertDurationToString(controller!.value.position);
+          videoSeekSecond = controller!.value.position.inSeconds.toDouble();
+          videoDurationSecond = controller!.value.duration.inSeconds.toDouble();
+        });
+
+        if (widget.isVideoProgressenable == 1 && widget.contentViewId != null) {
+          if (controller!.value.position.inSeconds != null) {
+            print(controller!.value.position.inSeconds);
+            controller!.value.position.inSeconds;
+            final second = controller!.value.position.inSeconds;
+            if (second != null) {
+              if (((second / 60).floor()) != lastProgressMinute) {
+                lastProgressMinute = (second / 60).floor();
+                watchedAnalaysis.add((second / 60).floor());
+              }
+            }
+          }
+        }
+      } else {
+        if (await Wakelock.enabled) {
+          await Wakelock.disable();
+          setState(() {});
+        }
+      }
+      if (widget.isVideoProgressenable == 1 && widget.contentViewId != null) {
+        timer = Timer.periodic(
+            Duration(minutes: widget.timeRecordVideoProgress ?? 3), (timer) {
+          updateVideoProgress();
+        });
+      }
+    });
     controller!.play();
     setState(() {
       controller!.setPlaybackSpeed(playbackSpeed!);
