@@ -955,7 +955,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       if (widget.isVideoProgressenable == 1 && widget.contentViewId != null) {
         timer = Timer.periodic(
             Duration(minutes: widget.timeRecordVideoProgress ?? 3), (timer) {
-          updateVideoProgress();
+          if (watchedAnalaysis.length > 0) {
+            updateVideoProgress();
+          }
         });
       }
     });
