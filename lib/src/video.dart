@@ -650,6 +650,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   Future<void> updateVideoProgress() async {
     try {
+      print(watchedAnalaysis.toList());
       final url = widget.domianUrl;
 
       if (watchedAnalaysis.isNotEmpty) {
