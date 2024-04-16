@@ -667,7 +667,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         }
       }
     });
-    if (widget.isVideoProgressenable && widget.contentViewId != null) {
+    if (widget.isVideoProgressenable == 1 && widget.contentViewId != null) {
       timer = Timer.periodic(
           Duration(minutes: widget.timeRecordVideoProgress ?? 3), (timer) {
         if (watchedAnalaysis.length != 0) {
