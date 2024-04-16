@@ -29,6 +29,13 @@ class YoYoPlayer extends StatefulWidget {
   ///```
   final String url;
 
+  final dynamic isVideoProgressenable;
+  final dynamic contentViewId;
+  final timeRecordVideoProgress;
+  final domianUrl;
+  final contentID;
+  final authToken;
+
   ///Video Player  style
   ///```dart
   ///videoStyle : VideoStyle(
@@ -80,6 +87,12 @@ class YoYoPlayer extends StatefulWidget {
     this.videoLoadingStyle,
     this.onFullScreen,
     this.onPlayingVideo,
+    this.isVideoProgressenable,
+    this.contentViewId,
+    this.timeRecordVideoProgress,
+    this.domianUrl,
+    this.contentID,
+    this.authToken,
   }) : super(key: key);
 
   @override
@@ -630,6 +643,38 @@ class _YoYoPlayerState extends State<YoYoPlayer>
     });
   }
 
+  Set<dynamic> watchedAnalaysis = {};
+
+  dynamic lastProgressMinute = -1;
+  late Timer timer;
+
+  Future<void> updateVideoProgress() async {
+    try {
+      print("Will update progress");
+      final url = widget.domianUrl;
+
+      if (watchedAnalaysis.isNotEmpty) {
+        final respond = await http.post(Uri.parse(url),
+            body: json.encode({
+              "contentViewId": widget.contentViewId.toString(),
+              "watchedMinutes": watchedAnalaysis.toList(),
+              "contentId": widget.contentID,
+            }),
+            headers: {
+              "Accept": "application/json",
+              'Content-Type': 'application/json',
+              "Authorization": "Bearer ${widget.authToken}",
+            });
+        print(respond.body);
+        if (respond.statusCode == 200) {
+          watchedAnalaysis = {};
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
 // video Listener
   void listener() async {
     if (controller!.value.isInitialized && controller!.value.isPlaying) {
@@ -643,6 +688,25 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         videoSeekSecond = controller!.value.position.inSeconds.toDouble();
         videoDurationSecond = controller!.value.duration.inSeconds.toDouble();
       });
+
+      if (widget.isVideoProgressenable == 1 && widget.contentViewId != null) {
+        if (controller!.value.position.inSeconds != null) {
+          print(controller!.value.position.inSeconds);
+          controller!.value.position.inSeconds;
+          final second = controller!.value.position.inSeconds;
+          if (second != null) {
+            if (((second / 60).floor()) != lastProgressMinute) {
+              lastProgressMinute = (second / 60).floor();
+              watchedAnalaysis.add((second / 60).floor());
+            }
+          }
+        }
+
+        timer = Timer.periodic(
+            Duration(minutes: widget.timeRecordVideoProgress ?? 3), (timer) {
+          updateVideoProgress();
+        });
+      }
     } else {
       if (await Wakelock.enabled) {
         await Wakelock.disable();
@@ -832,6 +896,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   void localM3U8play(String url) async {
     controller!.dispose();
+    timer.cancel();
     final lastPlayedPos = await controller!.position;
     controller = VideoPlayerController.networkUrl(
       Uri.parse(url),
