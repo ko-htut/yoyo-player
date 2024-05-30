@@ -703,6 +703,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
               "contentViewId": widget.contentViewId.toString(),
               "watchedMinutes": watchedAnalaysis.toList(),
               "contentId": widget.contentID.toString(),
+             "video_duration":
+                  controller!.value.duration.inMinutes.ceil().toString(),
             }),
             headers: {
               "Accept": "application/json",
