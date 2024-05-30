@@ -706,7 +706,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
              "video_duration":(((controller!.value.duration.inSeconds) /
                             60)
                         .ceil())
-                    .toString()),
+                    .toString()),  
                   
             }),
             headers: {
