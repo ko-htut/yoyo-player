@@ -905,7 +905,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   void localM3U8play(String url) async {
     controller!.dispose();
 
-    timer.cancel();
+    // timer.cancel();
 
     final lastPlayedPos = await controller!.position;
     controller = VideoPlayerController.networkUrl(
