@@ -260,7 +260,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       DeviceOrientation.landscapeRight,
     ]);
 
-      if (timer.isActive) {
+    if (timer.isActive) {
       timer.cancel();
     }
 
@@ -703,11 +703,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
               "contentViewId": widget.contentViewId.toString(),
               "watchedMinutes": watchedAnalaysis.toList(),
               "contentId": widget.contentID.toString(),
-             "video_duration":(((controller!.value.duration.inSeconds) /
-                            60)
-                        .ceil())
-                    .toString(),  
-                  
+              "video_duration":
+                  (((controller!.value.duration.inSeconds) / 60).ceil())
+                      .toString(),
             }),
             headers: {
               "Accept": "application/json",
@@ -908,9 +906,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   void localM3U8play(String url) async {
     controller!.dispose();
-    if (timer.isActive) {
-      timer.cancel();
-    }
+
+    timer.cancel();
+
     final lastPlayedPos = await controller!.position;
     controller = VideoPlayerController.networkUrl(
       Uri.parse(url),
