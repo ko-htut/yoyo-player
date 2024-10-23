@@ -259,8 +259,9 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-
-    timer.cancel();
+    if (timer != null) {
+      timer?.cancel();
+    }
 
     super.dispose();
   }
@@ -688,7 +689,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
   Set<dynamic> watchedAnalaysis = {};
 
   dynamic lastProgressMinute = -1;
-  late Timer timer;
+  Timer? timer;
 
   Future<void> updateVideoProgress() async {
     try {
