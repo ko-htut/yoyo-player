@@ -21,6 +21,7 @@ dependencies:
   wakelock:
   flutter_secure_storage:
   smooth_video_progress:
+  auto_orientation: ^2.3.1
 
 dev_dependencies:
   flutter_test:
