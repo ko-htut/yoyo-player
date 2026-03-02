@@ -24,8 +24,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
-import io.flutter.view.FlutterMain;
 import io.flutter.view.TextureRegistry;
 
 import java.util.HashMap;
@@ -101,39 +99,15 @@ public class BetterPlayerPlugin implements FlutterPlugin, ActivityAware, MethodC
     public BetterPlayerPlugin() {
     }
 
-    private BetterPlayerPlugin(Registrar registrar) {
-        this.flutterState =
-                new FlutterState(
-                        registrar.context(),
-                        registrar.messenger(),
-                        registrar::lookupKeyForAsset,
-                        registrar::lookupKeyForAsset,
-                        registrar.textures());
-        flutterState.startListening(this);
-    }
-
-    /**
-     * Registers this with the stable v1 embedding. Will not respond to lifecycle events.
-     */
-    public static void registerWith(Registrar registrar) {
-        final BetterPlayerPlugin plugin = new BetterPlayerPlugin(registrar);
-
-        registrar.addViewDestroyListener(
-                view -> {
-                    plugin.onDestroy();
-                    return false; // We are not interested in assuming ownership of the NativeView.
-                });
-
-    }
-
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         this.flutterState =
                 new FlutterState(
                         binding.getApplicationContext(),
                         binding.getBinaryMessenger(),
-                        FlutterMain::getLookupKeyForAsset,
-                        FlutterMain::getLookupKeyForAsset,
+                        asset -> binding.getFlutterAssets().getAssetFilePathByName(asset),
+                        (asset, packageName) ->
+                                binding.getFlutterAssets().getAssetFilePathByName(asset, packageName),
                         binding.getTextureRegistry());
         flutterState.startListening(this);
     }

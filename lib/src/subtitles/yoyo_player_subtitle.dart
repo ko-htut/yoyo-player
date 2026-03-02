@@ -22,7 +22,7 @@ class YoYoPlayerSubtitle {
     try {
       final scanner = value.split('\n');
       if (scanner.length == 2) {
-        return _handle2LinesSubtitles(scanner);
+        return _handle2LinesSubtitles(scanner, isWebVTT);
       }
       if (scanner.length > 2) {
         return _handle3LinesAndMoreSubtitles(scanner, isWebVTT);
@@ -34,7 +34,8 @@ class YoYoPlayerSubtitle {
     }
   }
 
-  static YoYoPlayerSubtitle _handle2LinesSubtitles(List<String> scanner) {
+  static YoYoPlayerSubtitle _handle2LinesSubtitles(
+      List<String> scanner, bool isWebVTT) {
     try {
       final timeSplit = scanner[0].split(timerSeparator);
       final start = _stringToDuration(timeSplit[0]);
@@ -42,7 +43,11 @@ class YoYoPlayerSubtitle {
       final texts = scanner.sublist(1, scanner.length);
 
       return YoYoPlayerSubtitle._(
-          index: -1, start: start, end: end, texts: texts);
+          index: -1,
+          start: start,
+          end: end,
+          texts: texts,
+          type: isWebVTT ? "vtt" : "srt");
     } catch (exception) {
       YoYoPlayerUtils.log("Failed to parse subtitle line: $scanner");
       return YoYoPlayerSubtitle._();
@@ -68,7 +73,11 @@ class YoYoPlayerSubtitle {
       final end = _stringToDuration(timeSplit[1]);
       final texts = scanner.sublist(firstLineOfText, scanner.length);
       return YoYoPlayerSubtitle._(
-          index: index, start: start, end: end, texts: texts);
+          index: index,
+          start: start,
+          end: end,
+          texts: texts,
+          type: isWebVTT ? "vtt" : "srt");
     } catch (exception) {
       YoYoPlayerUtils.log("Failed to parse subtitle line: $scanner");
       return YoYoPlayerSubtitle._();

@@ -1,7 +1,6 @@
 // Flutter imports:
 // Project imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:yoyo_player/src/video_player/video_player.dart';
 import 'package:yoyo_player/src/video_player/video_player_platform_interface.dart';
 

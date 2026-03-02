@@ -4,14 +4,10 @@
 
 // Dart imports:
 import 'dart:async';
-import 'dart:ui';
 
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-
-// Package imports:
-import 'package:meta/meta.dart' show visibleForTesting;
 
 import 'method_channel_video_player.dart';
 

@@ -1,7 +1,6 @@
 // Flutter imports:
 // Project imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:yoyo_player/src/controls/yoyo_player_progress_colors.dart';
 import 'package:yoyo_player/src/core/yoyo_player_controller.dart';
 import 'package:yoyo_player/src/video_player/video_player.dart';

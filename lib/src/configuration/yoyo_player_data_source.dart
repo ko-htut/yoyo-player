@@ -1,9 +1,7 @@
 // Project imports:
 import 'package:flutter/widgets.dart';
-import 'package:yoyo_player/src/configuration/yoyo_player_notification_configuration.dart';
 
 import '../../yoyo_player.dart';
-import 'yoyo_player_cache_configuration.dart';
 
 ///Representation of data source which will be played in Better Player. Allows
 ///to setup all necessary configuration connected to video source.

@@ -1,31 +1,58 @@
-buildscript {
-    ext.kotlin_version = '1.3.50'
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 
-rootProject.buildDir = '../build'
+rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {
-    project.evaluationDependsOn(':app')
+    project.evaluationDependsOn(":app")
 }
 
-task clean(type: Delete) {
+def ensureAndroidNamespace = { project ->
+    def androidExtension = project.extensions.findByName("android")
+    if (androidExtension == null || !androidExtension.hasProperty("namespace")) {
+        return
+    }
+
+    def hasNamespace = androidExtension.namespace != null && androidExtension.namespace.toString().trim()
+    if (hasNamespace) {
+        return
+    }
+
+    def manifestPackage
+    def manifestFile = file("${project.projectDir}/src/main/AndroidManifest.xml")
+    if (manifestFile.exists()) {
+        def matcher = (manifestFile.getText("UTF-8") =~ /package="([^"]+)"/)
+        if (matcher.find()) {
+            manifestPackage = matcher.group(1)
+        }
+    }
+
+    if (manifestPackage == null || manifestPackage.trim().isEmpty()) {
+        def fallbackGroup = project.group?.toString()
+        if (fallbackGroup == null || fallbackGroup == "unspecified" || !fallbackGroup.contains(".")) {
+            fallbackGroup = "dev.flutter.${project.name.replaceAll(/[^A-Za-z0-9_]/, "_")}"
+        }
+        manifestPackage = fallbackGroup
+    }
+
+    androidExtension.namespace = manifestPackage
+}
+
+subprojects { project ->
+    project.pluginManager.withPlugin("com.android.application") {
+        ensureAndroidNamespace(project)
+    }
+    project.pluginManager.withPlugin("com.android.library") {
+        ensureAndroidNamespace(project)
+    }
+}
+
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/rendering.dart';
 import 'package:yoyo_player/src/hls/hls_parser/variant_info.dart';
 
 class HlsTrackMetadataEntry {
@@ -17,7 +16,7 @@ class HlsTrackMetadataEntry {
   final List<VariantInfo>? variantInfos;
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is HlsTrackMetadataEntry) {
       return other.groupId == groupId &&
           other.name == name &&
@@ -28,5 +27,9 @@ class HlsTrackMetadataEntry {
   }
 
   @override
-  int get hashCode => hashValues(groupId, name, variantInfos);
+  int get hashCode => Object.hash(
+        groupId,
+        name,
+        variantInfos == null ? null : Object.hashAll(variantInfos!),
+      );
 }

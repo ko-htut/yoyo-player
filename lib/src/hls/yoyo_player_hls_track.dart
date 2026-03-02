@@ -20,7 +20,7 @@ class YoYoPlayerHlsTrack {
   int get hashCode => super.hashCode;
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return other is YoYoPlayerHlsTrack &&
         width == other.width &&
         height == other.height &&

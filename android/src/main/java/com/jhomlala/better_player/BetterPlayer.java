@@ -23,9 +23,9 @@ import android.view.Surface;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ControlDispatcher;
-import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Player.EventListener;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -261,10 +261,13 @@ final class BetterPlayer {
         }
 
 
-        playerNotificationManager = new PlayerNotificationManager(context,
-                playerNotificationChannelName,
-                NOTIFICATION_ID,
-                mediaDescriptionAdapter);
+        playerNotificationManager =
+                new PlayerNotificationManager.Builder(
+                        context,
+                        NOTIFICATION_ID,
+                        playerNotificationChannelName)
+                        .setMediaDescriptionAdapter(mediaDescriptionAdapter)
+                        .build();
         playerNotificationManager.setPlayer(exoPlayer);
         playerNotificationManager.setUseNextAction(false);
         playerNotificationManager.setUsePreviousAction(false);
@@ -538,7 +541,7 @@ final class BetterPlayer {
                     }
 
                     @Override
-                    public void onPlayerError(final ExoPlaybackException error) {
+                    public void onPlayerError(final PlaybackException error) {
                         eventSink.error("VideoError", "Video player had error " + error, null);
                     }
                 });
@@ -558,16 +561,11 @@ final class BetterPlayer {
     }
 
     private void setAudioAttributes(SimpleExoPlayer exoPlayer, Boolean mixWithOthers) {
-        Player.AudioComponent audioComponent = exoPlayer.getAudioComponent();
-        if (audioComponent == null) {
-            return;
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            audioComponent.setAudioAttributes(
+            exoPlayer.setAudioAttributes(
                     new AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MOVIE).build(), !mixWithOthers);
         } else {
-            audioComponent.setAudioAttributes(
+            exoPlayer.setAudioAttributes(
                     new AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC).build(), !mixWithOthers);
         }
     }
@@ -828,5 +826,4 @@ final class BetterPlayer {
         return result;
     }
 }
-
 

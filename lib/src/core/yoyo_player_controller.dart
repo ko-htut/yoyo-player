@@ -1061,7 +1061,20 @@ class YoYoPlayerController {
       _controllerEventStreamController.close();
 
       ///Delete files async
-      _tempFiles.forEach((file) => file.delete());
+      unawaited(_deleteTempFilesSafely());
     }
+  }
+
+  Future<void> _deleteTempFilesSafely() async {
+    for (final file in _tempFiles) {
+      try {
+        if (await file.exists()) {
+          await file.delete();
+        }
+      } catch (_) {
+        // Ignore cleanup errors during dispose.
+      }
+    }
+    _tempFiles.clear();
   }
 }

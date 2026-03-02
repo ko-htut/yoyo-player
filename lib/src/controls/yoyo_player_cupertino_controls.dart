@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:yoyo_player/src/configuration/yoyo_player_controls_configuration.dart';
 import 'package:yoyo_player/src/controls/yoyo_player_controls_state.dart';
 import 'package:yoyo_player/src/core/yoyo_player_utils.dart';
 import 'package:yoyo_player/src/video_player/video_player.dart';

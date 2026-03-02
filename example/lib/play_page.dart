@@ -19,7 +19,7 @@ class _PlayPageState extends State<PlayPage> {
     );
     YoYoPlayerDataSource dataSource = YoYoPlayerDataSource(
         YoYoPlayerDataSourceType.network,
-        "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
+        "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
         useHlsSubtitles: true);
     _yoyoPlayerController = YoYoPlayerController(betterPlayerConfiguration);
     _yoyoPlayerController.setupDataSource(dataSource);

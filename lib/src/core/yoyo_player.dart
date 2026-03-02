@@ -4,16 +4,14 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:yoyo_player/src/configuration/yoyo_player_controller_event.dart';
 import 'package:yoyo_player/src/core/yoyo_player_with_controls.dart';
 
 import '../../yoyo_player.dart';
-import 'yoyo_player_controller_provider.dart';
 import 'yoyo_player_utils.dart';
 
 ///Widget which uses provided controller to render video player.
@@ -70,7 +68,7 @@ class _YoYoPlayerState extends State<YoYoPlayer> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -109,15 +107,17 @@ class _YoYoPlayerState extends State<YoYoPlayer> with WidgetsBindingObserver {
     ///full screen is on, then full screen route must be pop and return to normal
     ///state.
     if (_isFullScreen) {
-      Wakelock.disable();
+      WakelockPlus.disable();
       _navigatorState.maybePop();
-      SystemChrome.setEnabledSystemUIOverlays(
-          _yoyoPlayerConfiguration.systemOverlaysAfterFullScreen);
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.manual,
+        overlays: _yoyoPlayerConfiguration.systemOverlaysAfterFullScreen,
+      );
       SystemChrome.setPreferredOrientations(
           _yoyoPlayerConfiguration.deviceOrientationsAfterFullScreen);
     }
 
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _controllerEventSubscription?.cancel();
     widget.controller.dispose();
     super.dispose();
@@ -221,7 +221,10 @@ class _YoYoPlayerState extends State<YoYoPlayer> with WidgetsBindingObserver {
       pageBuilder: _fullScreenRoutePageBuilder,
     );
 
-    await SystemChrome.setEnabledSystemUIOverlays([]);
+    await SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [],
+    );
 
     if (isAndroid) {
       if (_yoyoPlayerConfiguration.autoDetectFullscreenDeviceOrientation ==
@@ -255,19 +258,20 @@ class _YoYoPlayerState extends State<YoYoPlayer> with WidgetsBindingObserver {
     }
 
     if (!_yoyoPlayerConfiguration.allowedScreenSleep) {
-      Wakelock.enable();
+      WakelockPlus.enable();
     }
 
     await Navigator.of(context, rootNavigator: true).push(route);
     _isFullScreen = false;
     widget.controller.exitFullScreen();
 
-    // The wakelock plugins checks whether it needs to perform an action internally,
-    // so we do not need to check Wakelock.isEnabled.
-    Wakelock.disable();
+    // The wakelock plugin checks whether it needs to perform an action internally.
+    WakelockPlus.disable();
 
-    await SystemChrome.setEnabledSystemUIOverlays(
-        _yoyoPlayerConfiguration.systemOverlaysAfterFullScreen);
+    await SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: _yoyoPlayerConfiguration.systemOverlaysAfterFullScreen,
+    );
     await SystemChrome.setPreferredOrientations(
         _yoyoPlayerConfiguration.deviceOrientationsAfterFullScreen);
   }

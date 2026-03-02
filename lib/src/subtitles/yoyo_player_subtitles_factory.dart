@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:yoyo_player/src/core/yoyo_player_utils.dart';
 import '../../yoyo_player.dart';
 import 'yoyo_player_subtitle.dart';
-import 'yoyo_player_subtitles_source_type.dart';
 
 class YoYoPlayerSubtitlesFactory {
   static Future<List<YoYoPlayerSubtitle>> parseSubtitles(
